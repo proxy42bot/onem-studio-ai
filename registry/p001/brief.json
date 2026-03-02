@@ -1,0 +1,14 @@
+{
+  "project_id": "p001",
+  "name": "Studio Infrastructure",
+  "created": "2026-03-02T17:22:00-06:00",
+  "owner": "onem",
+  "priority": "HIGH",
+  "status": "active",
+  "brief": "Build and deploy the complete studio infrastructure: workspace, agent configs, dashboard, GitHub repo, and Vercel deployment.",
+  "audience": "Internal — Onem and Proxy",
+  "tone": "Technical, precise",
+  "deadline": null,
+  "agents_required": ["CODEXYON"],
+  "notes": "First project. Foundation for everything else."
+}
