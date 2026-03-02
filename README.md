@@ -36,7 +36,7 @@ Idea (Onem) → Proxy validates → Narryon (narrative) → Visuyon (production)
 
 ## Dashboard
 
-Live at: [onem-studio-ai.vercel.app](https://onem-studio-ai.vercel.app) _(deploying)_
+Live at: [onem-studio-ai.vercel.app](https://onem-studio-ai.vercel.app)
 
 ## Agent Docs
 
