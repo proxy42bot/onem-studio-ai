@@ -6,10 +6,10 @@ interface Agent {
   role: string
   status: 'active' | 'idle' | 'blocked' | 'offline'
   currentTask: string
-  color: string
   borderClass: string
   textClass: string
   icon: string
+  avatar: string
 }
 
 const agents: Agent[] = [
@@ -19,10 +19,10 @@ const agents: Agent[] = [
     role: 'Chief of Staff / System Orchestrator',
     status: 'active',
     currentTask: 'System architecture + dashboard deployment',
-    color: 'neon',
     borderClass: 'pixel-border-neon',
     textClass: 'neon-text',
     icon: '⬡',
+    avatar: '/avatars/proxy.jpg',
   },
   {
     id: 'narryon',
@@ -30,10 +30,10 @@ const agents: Agent[] = [
     role: 'Storytelling Engine',
     status: 'idle',
     currentTask: 'Awaiting brief',
-    color: 'pink',
     borderClass: 'pixel-border-pink',
     textClass: 'pink-text',
     icon: '✦',
+    avatar: '/avatars/narryon.jpg',
   },
   {
     id: 'visuyon',
@@ -41,10 +41,10 @@ const agents: Agent[] = [
     role: 'Production Engine',
     status: 'idle',
     currentTask: 'Awaiting narrative input',
-    color: 'blue',
     borderClass: 'pixel-border-blue',
     textClass: 'blue-text',
     icon: '◈',
+    avatar: '/avatars/visuyon.jpg',
   },
   {
     id: 'viryon',
@@ -52,10 +52,10 @@ const agents: Agent[] = [
     role: 'Growth Engine',
     status: 'idle',
     currentTask: 'Awaiting content',
-    color: 'yellow',
     borderClass: 'pixel-border-yellow',
     textClass: 'yellow-text',
     icon: '▲',
+    avatar: '/avatars/viryon.jpg',
   },
   {
     id: 'codexyon',
@@ -63,10 +63,10 @@ const agents: Agent[] = [
     role: 'Pipeline Architect',
     status: 'active',
     currentTask: 'Dashboard pipeline build',
-    color: 'neon',
     borderClass: 'pixel-border-neon',
     textClass: 'neon-text',
     icon: '⟨/⟩',
+    avatar: '/avatars/codexyon.jpg',
   },
   {
     id: 'finyon',
@@ -74,25 +74,25 @@ const agents: Agent[] = [
     role: 'Financial Intelligence',
     status: 'idle',
     currentTask: 'Awaiting revenue data',
-    color: 'yellow',
     borderClass: 'pixel-border-yellow',
     textClass: 'yellow-text',
     icon: '◎',
+    avatar: '/avatars/finyon.jpg',
   },
 ]
-
-const statusColors: Record<string, string> = {
-  active:  'neon-text',
-  idle:    'text-cyber-muted',
-  blocked: 'red-text',
-  offline: 'text-cyber-muted opacity-40',
-}
 
 const statusDot: Record<string, string> = {
   active:  'bg-cyber-neon shadow-neon',
   idle:    'bg-cyber-muted',
   blocked: 'bg-cyber-red shadow-red',
   offline: 'bg-cyber-muted opacity-30',
+}
+
+const statusLabel: Record<string, string> = {
+  active:  'neon-text',
+  idle:    'text-cyber-muted',
+  blocked: 'red-text',
+  offline: 'text-cyber-muted opacity-40',
 }
 
 export default function AgentGrid() {
@@ -103,22 +103,39 @@ export default function AgentGrid() {
         {agents.map((agent) => (
           <div
             key={agent.id}
-            className={`bg-cyber-panel ${agent.borderClass} rounded-none p-4 flex flex-col gap-2`}
+            className={`bg-cyber-panel ${agent.borderClass} p-4 flex flex-col gap-3`}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className={`text-lg ${agent.textClass}`}>{agent.icon}</span>
-                <span className={`font-pixel text-xs ${agent.textClass}`}>{agent.name}</span>
+            {/* Header row: avatar + name + status */}
+            <div className="flex items-center gap-3">
+              {/* Avatar */}
+              <div className={`shrink-0 w-12 h-12 rounded-sm overflow-hidden border ${agent.borderClass} shadow-sm`}
+                   style={{ boxShadow: 'none' }}>
+                <img
+                  src={agent.avatar}
+                  alt={agent.name}
+                  className="w-full h-full object-cover object-top"
+                />
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className={`w-2 h-2 rounded-full ${statusDot[agent.status]}`} />
-                <span className={`font-mono text-sm uppercase ${statusColors[agent.status]}`}>
-                  {agent.status}
-                </span>
+
+              {/* Name + role */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <span className={`font-pixel text-xs ${agent.textClass}`}>{agent.name}</span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className={`w-2 h-2 rounded-full ${statusDot[agent.status]}`} />
+                    <span className={`font-mono text-xs uppercase ${statusLabel[agent.status]}`}>
+                      {agent.status}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-cyber-muted font-mono text-xs leading-tight mt-0.5 truncate">
+                  {agent.role}
+                </div>
               </div>
             </div>
-            <div className="text-cyber-muted font-mono text-sm leading-tight">{agent.role}</div>
-            <div className="border-t border-cyber-border pt-2 mt-1">
+
+            {/* Current task */}
+            <div className="border-t border-cyber-border pt-2">
               <span className="text-cyber-muted font-mono text-xs uppercase tracking-wider">TASK › </span>
               <span className="font-mono text-sm text-cyber-text">{agent.currentTask}</span>
             </div>
