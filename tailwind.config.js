@@ -17,6 +17,7 @@ module.exports = {
           yellow:   '#ffd700',
           blue:     '#00cfff',
           red:      '#ff3860',
+          orange:   '#ff8c00',
           muted:    '#3a3a5c',
           text:     '#c8c8e8',
         }
@@ -31,6 +32,7 @@ module.exports = {
         yellow: '0 0 8px #ffd700, 0 0 20px #ffd70033',
         blue:   '0 0 8px #00cfff, 0 0 20px #00cfff33',
         red:    '0 0 8px #ff3860, 0 0 20px #ff386033',
+        orange: '0 0 8px #ff8c00, 0 0 20px #ff8c0033',
       },
       animation: {
         'scanline': 'scanline 8s linear infinite',

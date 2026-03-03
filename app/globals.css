@@ -85,12 +85,18 @@ body::after {
   box-shadow: 0 0 8px #ff386022;
 }
 
+.pixel-border-orange {
+  border: 1px solid #ff8c0044;
+  box-shadow: 0 0 8px #ff8c0022, inset 0 0 8px #ff8c0011;
+}
+
 /* Neon text */
 .neon-text { color: #00ff9f; text-shadow: 0 0 8px #00ff9f, 0 0 20px #00ff9f66; }
 .pink-text  { color: #ff00cc; text-shadow: 0 0 8px #ff00cc, 0 0 20px #ff00cc66; }
 .yellow-text{ color: #ffd700; text-shadow: 0 0 8px #ffd700, 0 0 20px #ffd70066; }
 .blue-text  { color: #00cfff; text-shadow: 0 0 8px #00cfff, 0 0 20px #00cfff66; }
-.red-text   { color: #ff3860; text-shadow: 0 0 8px #ff3860, 0 0 20px #ff386066; }
+.red-text    { color: #ff3860; text-shadow: 0 0 8px #ff3860, 0 0 20px #ff386066; }
+.orange-text { color: #ff8c00; text-shadow: 0 0 8px #ff8c00, 0 0 20px #ff8c0066; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
