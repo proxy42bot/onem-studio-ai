@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+@import 'react-grid-layout/css/styles.css';
+@import 'react-resizable/css/styles.css';
 
 @tailwind base;
 @tailwind components;
@@ -11,13 +13,10 @@
   --pink: #ff00cc;
   --yellow: #ffd700;
   --blue: #00cfff;
+  --orange: #ff8c00;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   background-color: var(--bg);
@@ -28,103 +27,106 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Scanline overlay */
 body::before {
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.08) 2px,
-    rgba(0,0,0,0.08) 4px
-  );
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
   pointer-events: none;
   z-index: 9999;
 }
 
-/* CRT vignette */
 body::after {
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.55) 100%);
   pointer-events: none;
   z-index: 9998;
 }
 
-/* Pixel border utility */
-.pixel-border {
-  border: 1px solid #1a1a2e;
-  box-shadow: inset 0 0 0 1px #1a1a2e;
+/* Grid layout overrides */
+.react-grid-layout { position: relative; }
+
+.react-grid-item {
+  transition: none !important;
+  cursor: default;
 }
 
-.pixel-border-neon {
-  border: 1px solid #00ff9f44;
-  box-shadow: 0 0 8px #00ff9f22, inset 0 0 8px #00ff9f11;
+.react-grid-item.react-draggable-dragging {
+  opacity: 0.85;
+  z-index: 100;
+  box-shadow: 0 0 24px #00ff9f44;
+  cursor: grabbing !important;
 }
 
-.pixel-border-pink {
-  border: 1px solid #ff00cc44;
-  box-shadow: 0 0 8px #ff00cc22, inset 0 0 8px #ff00cc11;
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
-.pixel-border-yellow {
-  border: 1px solid #ffd70044;
-  box-shadow: 0 0 8px #ffd70022, inset 0 0 8px #ffd70011;
+.react-grid-item:hover > .react-resizable-handle { opacity: 1; }
+
+.react-resizable-handle::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #00ff9f88;
+  border-bottom: 2px solid #00ff9f88;
 }
 
-.pixel-border-blue {
-  border: 1px solid #00cfff44;
-  box-shadow: 0 0 8px #00cfff22, inset 0 0 8px #00cfff11;
+.react-grid-item.react-grid-placeholder {
+  background: #00ff9f11 !important;
+  border: 1px dashed #00ff9f44 !important;
+  border-radius: 0 !important;
+  opacity: 1 !important;
 }
 
-.pixel-border-red {
-  border: 1px solid #ff386044;
-  box-shadow: 0 0 8px #ff386022;
+/* Widget drag handle */
+.widget-drag-handle {
+  cursor: grab;
+  user-select: none;
 }
+.widget-drag-handle:active { cursor: grabbing; }
 
-.pixel-border-orange {
-  border: 1px solid #ff8c0044;
-  box-shadow: 0 0 8px #ff8c0022, inset 0 0 8px #ff8c0011;
-}
+/* Pixel borders */
+.pixel-border         { border: 1px solid #1a1a2e; }
+.pixel-border-neon    { border: 1px solid #00ff9f44; box-shadow: 0 0 8px #00ff9f22, inset 0 0 8px #00ff9f11; }
+.pixel-border-pink    { border: 1px solid #ff00cc44; box-shadow: 0 0 8px #ff00cc22, inset 0 0 8px #ff00cc11; }
+.pixel-border-yellow  { border: 1px solid #ffd70044; box-shadow: 0 0 8px #ffd70022, inset 0 0 8px #ffd70011; }
+.pixel-border-blue    { border: 1px solid #00cfff44; box-shadow: 0 0 8px #00cfff22, inset 0 0 8px #00cfff11; }
+.pixel-border-red     { border: 1px solid #ff386044; box-shadow: 0 0 8px #ff386022; }
+.pixel-border-orange  { border: 1px solid #ff8c0044; box-shadow: 0 0 8px #ff8c0022, inset 0 0 8px #ff8c0011; }
 
 /* Neon text */
-.neon-text { color: #00ff9f; text-shadow: 0 0 8px #00ff9f, 0 0 20px #00ff9f66; }
-.pink-text  { color: #ff00cc; text-shadow: 0 0 8px #ff00cc, 0 0 20px #ff00cc66; }
-.yellow-text{ color: #ffd700; text-shadow: 0 0 8px #ffd700, 0 0 20px #ffd70066; }
-.blue-text  { color: #00cfff; text-shadow: 0 0 8px #00cfff, 0 0 20px #00cfff66; }
-.red-text    { color: #ff3860; text-shadow: 0 0 8px #ff3860, 0 0 20px #ff386066; }
-.orange-text { color: #ff8c00; text-shadow: 0 0 8px #ff8c00, 0 0 20px #ff8c0066; }
+.neon-text    { color: #00ff9f; text-shadow: 0 0 8px #00ff9f, 0 0 20px #00ff9f66; }
+.pink-text    { color: #ff00cc; text-shadow: 0 0 8px #ff00cc, 0 0 20px #ff00cc66; }
+.yellow-text  { color: #ffd700; text-shadow: 0 0 8px #ffd700, 0 0 20px #ffd70066; }
+.blue-text    { color: #00cfff; text-shadow: 0 0 8px #00cfff, 0 0 20px #00cfff66; }
+.red-text     { color: #ff3860; text-shadow: 0 0 8px #ff3860, 0 0 20px #ff386066; }
+.orange-text  { color: #ff8c00; text-shadow: 0 0 8px #ff8c00, 0 0 20px #ff8c0066; }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #0d0d1a; }
-::-webkit-scrollbar-thumb { background: #1a1a2e; border-radius: 0; }
+::-webkit-scrollbar-thumb { background: #1a1a2e; }
 ::-webkit-scrollbar-thumb:hover { background: #00ff9f44; }
 
-/* Blinking cursor */
-.cursor::after {
-  content: '█';
-  animation: blink 1s step-end infinite;
-  color: #00ff9f;
-}
+/* Cursor blink */
+.cursor::after { content: '█'; animation: blink 1s step-end infinite; color: #00ff9f; }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-@keyframes pulseNeon {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
-
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes pulseNeon { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 @keyframes flicker {
   0%, 95%, 100% { opacity: 1; }
-  96% { opacity: 0.8; }
-  97% { opacity: 1; }
-  98% { opacity: 0.6; }
-  99% { opacity: 1; }
+  96% { opacity: 0.8; } 97% { opacity: 1; } 98% { opacity: 0.6; } 99% { opacity: 1; }
 }
