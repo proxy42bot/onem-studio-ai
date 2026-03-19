@@ -1,131 +1,309 @@
-// dashboard-v2.1 — ONEM STUDIO AI main dashboard
+'use client'
+import { useEffect, useState } from 'react'
+import '../styles/globals.css'
+
+const agents = [
+  { name: 'PROXY',     role: 'Orchestrator',     status: 'active' },
+  { name: 'TRENDYON',  role: 'Trend Scout',       status: 'idle'   },
+  { name: 'NARRYON',   role: 'Narrative',         status: 'idle'   },
+  { name: 'VISUYON',   role: 'Visual Production', status: 'idle'   },
+  { name: 'RENDERYON', role: 'Asset Pipeline',    status: 'idle'   },
+  { name: 'VIRYON',    role: 'Optimize & Reach',  status: 'idle'   },
+  { name: 'CODEXYON',  role: 'Build & Security',  status: 'active' },
+  { name: 'FINYON',    role: 'Analytics',         status: 'idle'   },
+]
+
+const alerts = [
+  { type: 'warn', agent: 'FINYON',  msg: 'No revenue channels configured.' },
+  { type: 'warn', agent: 'VISUYON', msg: 'No asset storage configured.'    },
+  { type: 'info', agent: 'VISUYON', msg: 'Replicate API key needed.'        },
+  { type: 'info', agent: 'PROXY',   msg: 'Dashboard deployment in progress.' },
+]
+
+const activity = [
+  { time: '14:13', agent: 'CODEXYON', action: 'BUILD — Dashboard v2.1 deployed'                   },
+  { time: '13:42', agent: 'PROXY',    action: 'RESTORE — Identity loaded from GLOBAL_RULES v1.4'  },
+  { time: '12:18', agent: 'CODEXYON', action: 'GUARD — GitHub token refreshed'                    },
+  { time: '11:05', agent: 'PROXY',    action: 'ROUTE — Pipeline idle, no new inputs'              },
+  { time: '10:30', agent: 'FINYON',   action: 'REPORT — Daily analytics complete'                 },
+]
+
+const tasks = [
+  { text: 'Deploy dashboard v2.1',    done: true  },
+  { text: 'GitHub token refresh',     done: true  },
+  { text: 'Upload studio logo',       done: false },
+  { text: 'Configure Replicate API',  done: false },
+  { text: 'Set revenue channels',     done: false },
+]
+
+const pipelineSteps = [
+  { name: 'TREND', state: 'done'    },
+  { name: 'NARR',  state: 'done'    },
+  { name: 'VISU',  state: 'active'  },
+  { name: 'REND',  state: 'pending' },
+  { name: 'VIR',   state: 'pending' },
+  { name: 'CODE',  state: 'pending' },
+  { name: 'FIN',   state: 'pending' },
+]
+
 export default function Dashboard() {
+  const [theme, setTheme] = useState('light')
+  const [time, setTime]   = useState('')
+  const [date, setDate]   = useState('')
+
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date()
+      setTime(now.toLocaleTimeString('en-US', {
+        hour: '2-digit', minute: '2-digit', hour12: false,
+        timeZone: 'America/Monterrey',
+      }))
+      setDate(now.toLocaleDateString('en-US', {
+        weekday: 'short', month: 'short', day: 'numeric',
+        timeZone: 'America/Monterrey',
+      }))
+    }
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  const toggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : 'light'
+    setTheme(next)
+    document.documentElement.setAttribute('data-theme', next)
+  }
+
   return (
-    <div style={{maxWidth:'1280px', margin:'0 auto', padding:'32px'}}>
+    <div className="app-shell" data-theme={theme}>
 
-      {/* NAV */}
-      <nav style={{
-        position:'fixed', top:0, left:0, right:0, height:'56px',
-        background:'var(--color-bg)', borderBottom:'1px solid var(--color-border)',
-        display:'flex', alignItems:'center', justifyContent:'space-between',
-        padding:'0 32px', zIndex:100
-      }}>
-        <span style={{fontSize:'13px', fontWeight:500}}>ONEM STUDIO AI</span>
-        <div style={{display:'flex', gap:'32px', fontSize:'12px'}}>
-          <a href="#agents">agents</a>
-          <a href="#pipeline">pipeline</a>
-          <a href="#activity">activity</a>
-          <a href="#alerts">alerts</a>
+      {/* ── SIDEBAR ── */}
+      <aside className="sidebar">
+        <div className="sidebar-logo">
+          <div className="logo-box">
+            <span className="logo-box-placeholder">ON</span>
+          </div>
+          <div className="studio-name">ONEM STUDIO AI</div>
+          <div className="studio-sub">Studio Dashboard</div>
         </div>
-      </nav>
 
-      <div style={{marginTop:'80px', display:'flex', flexDirection:'column', gap:'48px'}}>
+        <nav className="sidebar-nav">
+          <div className="nav-section-label">Studio</div>
+          <a className="nav-item active" href="#">
+            <div className="nav-dot" style={{ background: 'var(--color-text)' }} />
+            Dashboard
+          </a>
+          <a className="nav-item" href="#">
+            <div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />
+            Agents
+          </a>
+          <a className="nav-item" href="#">
+            <div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />
+            Projects
+          </a>
 
-        {/* STATS BAR */}
-        <div className="card" style={{
-          display:'grid', gridTemplateColumns:'repeat(5,1fr)', padding:0, overflow:'hidden'
-        }}>
-          {[
-            {label:'AGENTS ONLINE', value:'2 / 8'},
-            {label:'PROJECTS',      value:'1'},
-            {label:'PIPELINE',      value:'LIVE'},
-            {label:'CONTENT PIECES',value:'0'},
-            {label:'ALERTS',        value:'2'}
-          ].map((stat, i) => (
-            <div key={i} style={{
-              padding:'16px 24px',
-              borderRight: i < 4 ? '1px solid var(--color-border)' : 'none'
-            }}>
-              <div style={{
-                fontSize:'10px', fontWeight:500, letterSpacing:'0.12em',
-                color:'var(--color-text-2)', marginBottom:'8px'
-              }}>{stat.label}</div>
-              <div style={{
-                fontSize:'48px', fontWeight:700, letterSpacing:'-0.02em',
-                color:'var(--color-text)', lineHeight:1
-              }}>{stat.value}</div>
+          <div className="nav-section-label">Content</div>
+          <a className="nav-item" href="#">
+            <div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />
+            Pipeline
+          </a>
+          <a className="nav-item" href="#">
+            <div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />
+            Assets
+          </a>
+          <a className="nav-item" href="#">
+            <div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />
+            Analytics
+          </a>
+
+          <div className="nav-section-label">System</div>
+          <a className="nav-item" href="#">
+            <div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />
+            Settings
+          </a>
+          <a className="nav-item" href="#">
+            <div className="nav-dot" style={{ background: '#E03E3E' }} />
+            Alerts
+            <span className="nav-badge">2</span>
+          </a>
+        </nav>
+
+        <div className="sidebar-footer">
+          <div className="founder-row">
+            <div className="founder-avatar"><span>ON</span></div>
+            <div>
+              <div className="founder-name">ONEM</div>
+              <div className="founder-role">Founder</div>
             </div>
-          ))}
+          </div>
         </div>
+      </aside>
 
-        {/* AGENT GRID */}
-        <div id="agents">
-          <div style={{
-            fontSize:'10px', fontWeight:500, letterSpacing:'0.12em',
-            color:'var(--color-text-2)', marginBottom:'16px'
-          }}>AGENT MATRIX</div>
-          <div style={{
-            display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:'24px'
-          }}>
-            {[
-              {name:'PROXY',    role:'Orchestrator',     status:'active'},
-              {name:'TRENDYON', role:'Trend Scout',       status:'idle'},
-              {name:'NARRYON',  role:'Narrative',         status:'idle'},
-              {name:'VISUYON',  role:'Visual Production', status:'idle'},
-              {name:'RENDERYON',role:'Asset Pipeline',    status:'idle'},
-              {name:'VIRYON',   role:'Optimize & Reach',  status:'idle'},
-              {name:'CODEXYON', role:'Build & Security',  status:'active'},
-              {name:'FINYON',   role:'Analytics',         status:'idle'}
-            ].map((agent, i) => (
-              <div key={i} className="card" style={{display:'flex', alignItems:'center', gap:'12px'}}>
-                <div style={{
-                  width:'40px', height:'40px', borderRadius:'12px',
-                  background:'var(--color-surface-2)', flexShrink:0
-                }}/>
-                <div style={{flex:1}}>
-                  <div style={{fontSize:'14px', fontWeight:500}}>{agent.name}</div>
-                  <div style={{
-                    fontSize:'11px', letterSpacing:'0.1em',
-                    color:'var(--color-text-2)', textTransform:'uppercase'
-                  }}>{agent.role}</div>
+      {/* ── MAIN ── */}
+      <div className="main-area">
+
+        {/* TOPBAR */}
+        <header className="topbar">
+          <div className="topbar-title">Dashboard</div>
+          <div className="topbar-right">
+            <span className="badge live">● LIVE</span>
+            <span className="badge">v1.4</span>
+            <span className="badge">{time} CST</span>
+            <span className="theme-icon">{theme === 'light' ? '☀' : '☾'}</span>
+            <button
+              className="theme-toggle"
+              onClick={toggleTheme}
+              aria-label="Toggle dark mode"
+            />
+          </div>
+        </header>
+
+        {/* CONTENT */}
+        <main className="content-area">
+          <div className="widget-grid">
+
+            {/* STATS BAR — full width */}
+            <div className="widget col-12">
+              <div className="widget-label">System Metrics</div>
+              <div className="stats-row">
+                {[
+                  { val: '2 / 8', lbl: 'Agents Online'   },
+                  { val: '1',     lbl: 'Projects'         },
+                  { val: 'LIVE',  lbl: 'Pipeline'         },
+                  { val: '0',     lbl: 'Content Pieces'   },
+                  { val: '2',     lbl: 'Alerts'           },
+                ].map((s, i) => (
+                  <div className="stat-col" key={i}>
+                    <div
+                      className="stat-val"
+                      style={
+                        s.lbl === 'Alerts'      ? { color: '#E03E3E' } :
+                        s.val === 'LIVE'        ? { fontSize: '20px', paddingTop: '6px' } :
+                        {}
+                      }
+                    >
+                      {s.val}
+                    </div>
+                    <div className="stat-lbl">{s.lbl}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* AGENT MATRIX — 4 cols */}
+            <div className="widget col-4">
+              <div className="widget-label">Agent Matrix</div>
+              <div className="drag-handle">
+                <span /><span /><span /><span />
+              </div>
+              {agents.map((a, i) => (
+                <div className="agent-row" key={i}>
+                  <div className="agent-avatar" />
+                  <div style={{ flex: 1 }}>
+                    <div className="agent-name">{a.name}</div>
+                    <div className="agent-role">{a.role}</div>
+                  </div>
+                  <div
+                    className="agent-status-dot"
+                    style={{ background: a.status === 'active' ? 'var(--color-text)' : 'var(--color-text-3)' }}
+                  />
                 </div>
-                <div style={{
-                  width:'6px', height:'6px', borderRadius:'50%',
-                  background: agent.status === 'active' ? '#0A0A0A' : '#ABABAB'
-                }}/>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
 
-        {/* ALERTS */}
-        <div id="alerts">
-          <div style={{
-            fontSize:'10px', fontWeight:500, letterSpacing:'0.12em',
-            color:'var(--color-text-2)', marginBottom:'16px'
-          }}>ALERTS</div>
-          <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
-            {[
-              {type:'WARN', agent:'FINYON',   msg:'No revenue channels configured.'},
-              {type:'WARN', agent:'VISUYON',  msg:'No asset storage configured.'},
-              {type:'INFO', agent:'VISUYON',  msg:'Replicate API key needed.'},
-              {type:'INFO', agent:'PROXY',    msg:'Dashboard deployment in progress.'}
-            ].map((alert, i) => (
-              <div key={i} style={{
-                background:'var(--color-surface)',
-                borderRadius:'var(--radius-alert)',
-                border:'1px solid var(--color-border)',
-                borderLeft:`3px solid ${alert.type === 'WARN' ? '#F5C518' : '#ABABAB'}`,
-                padding:'14px 20px',
-                display:'flex', gap:'12px', alignItems:'center'
-              }}>
-                <span style={{
-                  fontSize:'10px', fontWeight:500, letterSpacing:'0.1em',
-                  color:'var(--color-text-2)'
-                }}>{alert.type}</span>
-                <span style={{fontSize:'11px', fontWeight:500}}>
-                  {alert.agent}
-                </span>
-                <span style={{fontSize:'13px', color:'var(--color-text-2)'}}>
-                  {alert.msg}
-                </span>
+            {/* WEATHER — 2 cols */}
+            <div className="widget col-2">
+              <div className="widget-label">Weather</div>
+              <div className="drag-handle"><span /><span /><span /><span /></div>
+              <div className="weather-temp">24°</div>
+              <div className="weather-desc">Partly cloudy</div>
+              <div className="weather-desc" style={{ marginTop: '2px', fontSize: '10px' }}>
+                San Pedro GG · MX
               </div>
-            ))}
+            </div>
+
+            {/* CLOCK — 2 cols */}
+            <div className="widget col-2">
+              <div className="widget-label">Time · CST</div>
+              <div className="drag-handle"><span /><span /><span /><span /></div>
+              <div className="clock-time">{time}</div>
+              <div className="clock-date">{date}</div>
+            </div>
+
+            {/* TASKS — 4 cols */}
+            <div className="widget col-4">
+              <div className="widget-label">Tasks</div>
+              <div className="drag-handle"><span /><span /><span /><span /></div>
+              {tasks.map((t, i) => (
+                <div className="task-row" key={i}>
+                  <div className={`task-check${t.done ? ' done' : ''}`} />
+                  <div className={`task-text${t.done ? ' done' : ''}`}>{t.text}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* PIPELINE — 7 cols */}
+            <div className="widget col-7">
+              <div className="widget-label">Pipeline Status</div>
+              <div className="drag-handle"><span /><span /><span /><span /></div>
+              <div className="pipeline-steps">
+                {pipelineSteps.map((s, i) => (
+                  <div key={i} style={{ display: 'contents' }}>
+                    <div className="p-step">
+                      <div className={`p-dot ${s.state}`} />
+                      <div className={`p-name${s.state === 'active' ? ' active' : ''}`}>
+                        {s.name}
+                      </div>
+                    </div>
+                    {i < pipelineSteps.length - 1 && <div className="p-line" />}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ALERTS — 5 cols */}
+            <div className="widget col-5">
+              <div className="widget-label">Alerts</div>
+              <div className="drag-handle"><span /><span /><span /><span /></div>
+              {alerts.map((a, i) => (
+                <div className={`alert-item ${a.type}`} key={i}>
+                  <div className="alert-type">{a.type}</div>
+                  <div className="alert-msg">
+                    <strong>{a.agent}</strong> — {a.msg}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* ACTIVITY LOG — 12 cols */}
+            <div className="widget col-12">
+              <div className="widget-label">Activity Log</div>
+              <div className="drag-handle"><span /><span /><span /><span /></div>
+              {activity.map((a, i) => (
+                <div className="act-row" key={i}>
+                  <div className="act-time">{a.time}</div>
+                  <div className="act-agent">{a.agent}</div>
+                  <div className="act-action">{a.action}</div>
+                </div>
+              ))}
+            </div>
+
           </div>
-        </div>
+        </main>
+
+        {/* FOOTER */}
+        <footer className="footer">
+          <div className="footer-left">ONEM STUDIO AI © 2026 · dashboard-v2.1</div>
+          <div className="footer-right">
+            <a className="footer-link" href="https://github.com/proxy42bot/onem-studio-ai">
+              GitHub
+            </a>
+            <a className="footer-link" href="#">Docs</a>
+            <span className="footer-link">● Operational</span>
+          </div>
+        </footer>
 
       </div>
     </div>
   )
 }
-// v2.1-force-redeploy 1773951907
