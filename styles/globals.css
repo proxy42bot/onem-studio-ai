@@ -1,3 +1,5 @@
+@import 'react-grid-layout/css/styles.css';
+@import 'react-grid-layout/css/resizable.css';
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono&display=swap');
 @import './tokens.css';
 
@@ -370,4 +372,38 @@ html, body {
  .main-area { margin-left: 0; }
  .col-4, .col-3, .col-2 { grid-column: span 6; }
  .col-6, .col-7, .col-8 { grid-column: span 12; }
+}
+
+/* ── REACT-GRID-LAYOUT OVERRIDES ── */
+.react-grid-item {
+ transition: none !important;
+}
+.react-grid-item.react-grid-placeholder {
+ background: var(--color-accent) !important;
+ opacity: 0.12 !important;
+ border-radius: var(--radius-card) !important;
+}
+.react-resizable-handle {
+ opacity: 0 !important;
+ transition: opacity 150ms !important;
+}
+.react-grid-item:hover .react-resizable-handle {
+ opacity: 0.4 !important;
+}
+.react-resizable-handle::after {
+ border-color: var(--color-text) !important;
+ border-width: 0 2px 2px 0 !important;
+ width: 8px !important;
+ height: 8px !important;
+ border-radius: 1px !important;
+}
+.react-grid-item.react-draggable-dragging {
+ box-shadow: var(--shadow-hover) !important;
+ border-color: var(--color-border-hover) !important;
+ z-index: 100 !important;
+ cursor: grabbing !important;
+}
+.drag-handle { cursor: grab !important; }
+.react-grid-item.react-draggable-dragging .drag-handle {
+ cursor: grabbing !important;
 }
