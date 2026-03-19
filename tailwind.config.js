@@ -8,58 +8,41 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        cyber: {
-          bg:       '#07070f',
-          panel:    '#0d0d1a',
-          border:   '#1a1a2e',
-          neon:     '#00ff9f',
-          pink:     '#ff00cc',
-          yellow:   '#ffd700',
-          blue:     '#00cfff',
-          red:      '#ff3860',
-          orange:   '#ff8c00',
-          muted:    '#3a3a5c',
-          text:     '#c8c8e8',
+        gallery: {
+          bg:          '#F5F4F0',
+          surface:     '#FFFFFF',
+          border:      '#1A1A1A',
+          'border-soft':'#D4D2CC',
+          text:        '#0D0D0D',
+          'text-mid':  '#5A5A5A',
+          'text-muted':'#9A9898',
+          accent:      '#1A1A1A',
+          alert:       '#C8102E',
+          hover:       '#F0EEE8',
         }
       },
       fontFamily: {
-        pixel: ['"Press Start 2P"', 'monospace'],
-        mono:  ['"VT323"', 'monospace'],
+        serif: ['"EB Garamond"', 'Georgia', 'serif'],
+        sans:  ['"Inter"', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        mono:  ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
       },
-      boxShadow: {
-        neon:   '0 0 8px #00ff9f, 0 0 20px #00ff9f33',
-        pink:   '0 0 8px #ff00cc, 0 0 20px #ff00cc33',
-        yellow: '0 0 8px #ffd700, 0 0 20px #ffd70033',
-        blue:   '0 0 8px #00cfff, 0 0 20px #00cfff33',
-        red:    '0 0 8px #ff3860, 0 0 20px #ff386033',
-        orange: '0 0 8px #ff8c00, 0 0 20px #ff8c0033',
+      fontSize: {
+        'display': ['28px', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
+        'widget-title': ['15px', { lineHeight: '1.3' }],
+        'label':   ['10px', { lineHeight: '1.4', letterSpacing: '0.12em' }],
+        'body':    ['13px', { lineHeight: '1.5' }],
+        'caption': ['11px', { lineHeight: '1.4' }],
+        'mono':    ['11px', { lineHeight: '1.5' }],
       },
-      animation: {
-        'scanline': 'scanline 8s linear infinite',
-        'blink':    'blink 1s step-end infinite',
-        'pulse-neon': 'pulseNeon 2s ease-in-out infinite',
-        'flicker': 'flicker 4s linear infinite',
+      spacing: {
+        '1': '4px',
+        '2': '8px',
+        '3': '16px',
+        '4': '24px',
+        '5': '40px',
       },
-      keyframes: {
-        scanline: {
-          '0%':   { transform: 'translateY(-100%)' },
-          '100%': { transform: 'translateY(100vh)' },
-        },
-        blink: {
-          '0%, 100%': { opacity: '1' },
-          '50%':      { opacity: '0' },
-        },
-        pulseNeon: {
-          '0%, 100%': { opacity: '1' },
-          '50%':      { opacity: '0.6' },
-        },
-        flicker: {
-          '0%, 95%, 100%': { opacity: '1' },
-          '96%':           { opacity: '0.8' },
-          '97%':           { opacity: '1' },
-          '98%':           { opacity: '0.6' },
-          '99%':           { opacity: '1' },
-        },
+      borderRadius: {
+        'gallery': '2px',
       },
     },
   },

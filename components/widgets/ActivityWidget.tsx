@@ -1,27 +1,37 @@
 'use client'
 
 const feed = [
-  { time: '20:29', agent: 'PROXY',    color: 'neon-text',   action: 'BUILD',   target: 'Liquid grid dashboard initiated' },
-  { time: '17:22', agent: 'CODEXYON', color: 'neon-text',   action: 'DEPLOY',  target: 'Vercel deployment live' },
-  { time: '17:22', agent: 'CODEXYON', color: 'neon-text',   action: 'PUSH',    target: 'GitHub repo: onem-studio-ai' },
-  { time: '17:22', agent: 'PROXY',    color: 'neon-text',   action: 'CONFIG',  target: 'Agent souls defined x5' },
-  { time: '17:11', agent: 'ONEM',     color: 'yellow-text', action: 'BRIEF',   target: 'AI creative studio concept approved' },
+  { time: '22:43', agent: 'PROXY',    action: 'BUILD',   target: 'Liquid grid — Step 3 widgets'    },
+  { time: '22:29', agent: 'PROXY',    action: 'BUILD',   target: 'Liquid grid dashboard initiated'  },
+  { time: '20:18', agent: 'CODEXYON', action: 'FIX',     target: 'Agent avatar crops — recut'       },
+  { time: '20:13', agent: 'CODEXYON', action: 'DEPLOY',  target: 'Agent avatars live on dashboard'  },
+  { time: '17:22', agent: 'CODEXYON', action: 'DEPLOY',  target: 'Vercel + GitHub live'             },
+  { time: '17:11', agent: 'ONEM',     action: 'BRIEF',   target: 'Studio concept approved'          },
 ]
 
 export default function ActivityWidget() {
   return (
-    <div className="flex flex-col h-full">
-      {feed.map((item, i) => (
-        <div key={i} className={`flex items-start gap-2 py-2 font-mono text-sm ${i !== feed.length - 1 ? 'border-b border-cyber-border' : ''}`}>
-          <span className="text-cyber-muted shrink-0 text-xs">{item.time}</span>
-          <span className={`shrink-0 w-20 text-xs ${item.color}`}>{item.agent}</span>
-          <span className="text-cyber-muted shrink-0 w-14 uppercase text-xs">{item.action}</span>
-          <span className="text-cyber-text text-xs leading-tight">{item.target}</span>
-        </div>
-      ))}
-      <div className="flex items-center gap-1 pt-2 font-mono text-xs text-cyber-muted mt-auto">
-        <span>&gt;</span><span className="cursor" />
-      </div>
+    <div className="mac-inset" style={{ padding: 0, height: '100%', overflow: 'auto' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, fontFamily: '"Monaco", monospace' }}>
+        <thead>
+          <tr style={{ background: '#C0C0C0', borderBottom: '1px solid #000' }}>
+            <th style={{ padding: '2px 6px', textAlign: 'left', fontWeight: 'bold', width: 42 }}>Time</th>
+            <th style={{ padding: '2px 6px', textAlign: 'left', fontWeight: 'bold', width: 70 }}>Agent</th>
+            <th style={{ padding: '2px 6px', textAlign: 'left', fontWeight: 'bold', width: 56 }}>Action</th>
+            <th style={{ padding: '2px 6px', textAlign: 'left', fontWeight: 'bold' }}>Event</th>
+          </tr>
+        </thead>
+        <tbody>
+          {feed.map((e, i) => (
+            <tr key={i} style={{ background: i % 2 === 0 ? '#FFFFFF' : '#E8E8E8', borderBottom: '1px solid #C0C0C0' }}>
+              <td style={{ padding: '2px 6px', color: '#808080' }}>{e.time}</td>
+              <td style={{ padding: '2px 6px', color: '#000082', fontWeight: 'bold' }}>{e.agent}</td>
+              <td style={{ padding: '2px 6px', color: '#808080' }}>{e.action}</td>
+              <td style={{ padding: '2px 6px' }}>{e.target}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

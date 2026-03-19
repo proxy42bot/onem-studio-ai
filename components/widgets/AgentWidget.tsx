@@ -1,30 +1,39 @@
 'use client'
 
 const agents = [
-  { id: 'proxy',    name: 'PROXY',    role: 'Orchestrator',       status: 'active', task: 'System architecture',        border: 'pixel-border-neon',   text: 'neon-text',    dot: 'bg-cyber-neon',   avatar: '/avatars/proxy.jpg'    },
-  { id: 'narryon',  name: 'NARRYON',  role: 'Storytelling',       status: 'idle',   task: 'Awaiting brief',             border: 'pixel-border-pink',   text: 'pink-text',    dot: 'bg-cyber-muted',  avatar: '/avatars/narryon.jpg'  },
-  { id: 'visuyon',  name: 'VISUYON',  role: 'Production',         status: 'idle',   task: 'Awaiting narrative',         border: 'pixel-border-blue',   text: 'blue-text',    dot: 'bg-cyber-muted',  avatar: '/avatars/visuyon.jpg'  },
-  { id: 'viryon',   name: 'VIRYON',   role: 'Growth',             status: 'idle',   task: 'Awaiting content',           border: 'pixel-border-yellow', text: 'yellow-text',  dot: 'bg-cyber-muted',  avatar: '/avatars/viryon.jpg'   },
-  { id: 'codexyon', name: 'CODEXYON', role: 'Pipeline Architect',  status: 'active', task: 'Dashboard pipeline build',   border: 'pixel-border-neon',   text: 'neon-text',    dot: 'bg-cyber-neon',   avatar: '/avatars/codexyon.jpg' },
-  { id: 'finyon',   name: 'FINYON',   role: 'Financial Intel',    status: 'idle',   task: 'Awaiting revenue data',      border: 'pixel-border-orange', text: 'orange-text',  dot: 'bg-cyber-muted',  avatar: '/avatars/finyon.jpg'   },
+  { id: 'proxy',    name: 'PROXY',    role: 'Orchestrator',       status: 'active',  task: 'System architecture + dashboard', avatar: '/avatars/proxy.jpg'    },
+  { id: 'narryon',  name: 'NARRYON',  role: 'Storytelling',       status: 'idle',    task: 'Awaiting brief',                  avatar: '/avatars/narryon.jpg'  },
+  { id: 'visuyon',  name: 'VISUYON',  role: 'Production',         status: 'idle',    task: 'Awaiting narrative input',         avatar: '/avatars/visuyon.jpg'  },
+  { id: 'viryon',   name: 'VIRYON',   role: 'Growth',             status: 'idle',    task: 'Awaiting content',                avatar: '/avatars/viryon.jpg'   },
+  { id: 'codexyon', name: 'CODEXYON', role: 'Pipeline Architect',  status: 'active',  task: 'Dashboard build',                 avatar: '/avatars/codexyon.jpg' },
+  { id: 'finyon',   name: 'FINYON',   role: 'Financial Intel',    status: 'idle',    task: 'Awaiting revenue data',           avatar: '/avatars/finyon.jpg'   },
 ]
+
+const dotClass: Record<string, string> = {
+  active:  'mac-dot-active',
+  idle:    'mac-dot-idle',
+  blocked: 'mac-dot-blocked',
+}
 
 export default function AgentWidget() {
   return (
-    <div className="flex flex-col gap-2">
-      {agents.map((a) => (
-        <div key={a.id} className={`${a.border} bg-cyber-bg flex items-center gap-3 p-2`}>
-          <img src={a.avatar} alt={a.name} className="w-9 h-9 object-cover object-top shrink-0" />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2">
-              <span className={`font-pixel text-xs ${a.text}`}>{a.name}</span>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <div className={`w-1.5 h-1.5 rounded-full ${a.dot}`} />
-                <span className="font-mono text-xs text-cyber-muted uppercase">{a.status}</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      {agents.map((a, i) => (
+        <div key={a.id}>
+          <div className="mac-raised" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 6px' }}>
+            <img src={a.avatar} alt={a.name} style={{ width: 28, height: 28, objectFit: 'cover', objectPosition: 'top', border: '1px solid #000', flexShrink: 0 }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
+                <span style={{ fontWeight: 'bold', fontSize: 12 }}>{a.name}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                  <span className={dotClass[a.status]} />
+                  <span style={{ fontSize: 10, color: '#808080', textTransform: 'uppercase' }}>{a.status}</span>
+                </div>
               </div>
+              <div style={{ fontSize: 10, color: '#808080', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.task}</div>
             </div>
-            <div className="font-mono text-xs text-cyber-muted truncate">{a.task}</div>
           </div>
+          {i < agents.length - 1 && <div className="mac-groove" />}
         </div>
       ))}
     </div>

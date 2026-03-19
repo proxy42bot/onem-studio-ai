@@ -1,22 +1,22 @@
 'use client'
 
-const metrics = [
-  { label: 'ACTIVE PROJECTS',  value: '1',        sub: '+3 in queue',        color: 'neon-text'    },
-  { label: 'AGENTS ONLINE',    value: '2 / 6',    sub: 'Proxy + Codexyon',   color: 'neon-text'    },
-  { label: 'REVENUE (MTD)',    value: '$0',        sub: 'Channels pending',   color: 'yellow-text'  },
-  { label: 'CONTENT PIECES',  value: '0',         sub: 'First drop pending', color: 'blue-text'    },
-  { label: 'PIPELINE',        value: 'LIVE',      sub: 'Dashboard deployed', color: 'pink-text'    },
-  { label: 'ALERTS',          value: '1',         sub: 'Setup in progress',  color: 'yellow-text'  },
+const kpis = [
+  { label: 'Active Projects', value: '1',        sub: '+3 in queue'        },
+  { label: 'Agents Online',   value: '2 / 6',    sub: 'Proxy + Codexyon'   },
+  { label: 'Revenue (MTD)',   value: '$0',        sub: 'Channels pending'   },
+  { label: 'Content Pieces',  value: '0',         sub: 'First drop pending' },
+  { label: 'Pipeline',        value: 'LIVE',      sub: 'Dashboard deployed' },
+  { label: 'Alerts',          value: '2',         sub: 'Pending decisions'  },
 ]
 
 export default function MetricsWidget() {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 h-full content-start">
-      {metrics.map((m) => (
-        <div key={m.label} className="pixel-border bg-cyber-bg p-3 flex flex-col gap-1">
-          <div className="font-mono text-xs text-cyber-muted uppercase tracking-widest leading-tight">{m.label}</div>
-          <div className={`font-pixel text-lg leading-none ${m.color}`}>{m.value}</div>
-          <div className="font-mono text-xs text-cyber-muted">{m.sub}</div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+      {kpis.map((k) => (
+        <div key={k.label} className="mac-inset" style={{ padding: '4px 6px' }}>
+          <div style={{ fontSize: 10, color: '#808080', marginBottom: 2 }}>{k.label}</div>
+          <div style={{ fontSize: 16, fontWeight: 'bold', color: '#000082', lineHeight: 1 }}>{k.value}</div>
+          <div style={{ fontSize: 10, color: '#808080', marginTop: 2 }}>{k.sub}</div>
         </div>
       ))}
     </div>

@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import './tokens.css';
 @import 'react-grid-layout/css/styles.css';
 @import 'react-resizable/css/styles.css';
 
@@ -6,127 +7,429 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════
+   MAC OS 8 — DESIGN SYSTEM
+   Base rule: depth through bevel, not color.
+   No border-radius. No blur. No transitions.
+═══════════════════════════════════════════════ */
+
 :root {
-  --bg: #07070f;
-  --panel: #0d0d1a;
-  --neon: #00ff9f;
-  --pink: #ff00cc;
-  --yellow: #ffd700;
-  --blue: #00cfff;
-  --orange: #ff8c00;
+  --bg:        #C0C0C0;
+  --bg-dark:   #A8A8A8;
+  --bg-light:  #E8E8E8;
+  --white:     #FFFFFF;
+  --black:     #000000;
+  --shadow:    #808080;
+  --hi:        #FFFFFF;   /* bevel highlight: top + left */
+  --lo:        #404040;   /* bevel shadow:    bottom + right */
+  --mid:       #808080;   /* outer shadow tone */
+  --blue:      #000082;   /* selection / accent */
+  --blue-mid:  #0050C8;
+  --disabled:  #808080;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  background-color: var(--bg);
-  color: #c8c8e8;
-  font-family: 'VT323', monospace;
-  font-size: 18px;
+  background: var(--bg);
+  color: var(--black);
+  font-family: "Chicago", "Charcoal", "Geneva", Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
   min-height: 100vh;
-  overflow-x: hidden;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
-  pointer-events: none;
-  z-index: 9999;
+/* ═══════════════════════════════════════════════
+   BEVEL SYSTEM
+   Three layers: outer black ring, inner hi/lo
+═══════════════════════════════════════════════ */
+
+/*
+  Raised surface:
+  ┌─────┐  ← black outer
+  │w   g│  ← white top-left / gray bottom-right inside
+  │g   w│
+  └─────┘
+*/
+.mac-raised {
+  background: var(--bg);
+  border: 1px solid var(--black);
+  box-shadow:
+    inset  1px  1px 0 var(--hi),   /* top-left inner highlight */
+    inset -1px -1px 0 var(--lo);   /* bottom-right inner shadow */
 }
 
-body::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.55) 100%);
-  pointer-events: none;
-  z-index: 9998;
+/*
+  Inset surface (content well, input):
+  Inverted bevel — looks pressed into the surface.
+*/
+.mac-inset {
+  background: var(--white);
+  border: 1px solid var(--black);
+  box-shadow:
+    inset  1px  1px 0 var(--lo),   /* top-left inner shadow */
+    inset -1px -1px 0 var(--hi);   /* bottom-right inner highlight */
 }
 
-/* Grid layout overrides */
-.react-grid-layout { position: relative; }
+/* Gray inset (no white fill) */
+.mac-inset-gray {
+  background: var(--bg-dark);
+  border: 1px solid var(--black);
+  box-shadow:
+    inset  1px  1px 0 var(--lo),
+    inset -1px -1px 0 var(--hi);
+}
 
-.react-grid-item {
-  transition: none !important;
+/* ═══════════════════════════════════════════════
+   WINDOW CHROME
+═══════════════════════════════════════════════ */
+
+.mac-window {
+  background: var(--bg);
+  border: 2px solid var(--black);
+  /* Hard drop shadow — offset 2px, no blur */
+  box-shadow: 2px 2px 0 var(--shadow), 3px 3px 0 var(--black);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Active title bar — Mac OS 8 pinstripe gradient */
+.mac-titlebar {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  min-height: 20px;
+  padding: 0 4px;
+  gap: 4px;
+  border-bottom: 1px solid var(--black);
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+  position: relative;
+  /* Pinstripe: alternating dark/mid blue lines */
+  background: repeating-linear-gradient(
+    to bottom,
+    #000082 0px, #000082 1px,
+    #1058C8 1px, #1058C8 2px
+  );
+}
+.mac-titlebar:active { cursor: grabbing; }
+
+/* Title text — centered with overflow protection */
+.mac-title-text {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--white);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0;
+  /* Keep text out from under the boxes */
+  padding: 0 20px;
+}
+
+/* Title bar chrome boxes (close / zoom) */
+.mac-titlebox {
+  width: 13px;
+  height: 13px;
+  background: var(--bg);
+  border: 1px solid var(--black);
+  box-shadow: inset 1px 1px 0 var(--hi), inset -1px -1px 0 var(--lo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 7px;
+  line-height: 1;
+  color: var(--black);
+}
+.mac-titlebox:active {
+  box-shadow: inset 1px 1px 0 var(--lo), inset -1px -1px 0 var(--hi);
+  background: var(--bg-dark);
+}
+
+/* ─── Scrollbar area between titlebar boxes ─── */
+.mac-titlebar-spacer {
+  flex: 1;
+}
+
+/* Content area */
+.mac-content {
+  flex: 1;
+  overflow: auto;
+  padding: 6px;
+  background: var(--bg);
+  min-height: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════ */
+
+.mac-btn {
+  font-family: "Chicago", "Charcoal", "Geneva", Arial, sans-serif;
+  font-size: 12px;
+  color: var(--black);
+  background: var(--bg);
+  border: 1px solid var(--black);
+  box-shadow: inset 1px 1px 0 var(--hi), inset -1px -1px 0 var(--lo);
+  padding: 3px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  outline: none;
+}
+
+.mac-btn:hover {
+  background: var(--bg-light);
+}
+
+.mac-btn:active,
+.mac-btn.pressed {
+  background: var(--bg-dark);
+  box-shadow: inset 1px 1px 0 var(--lo), inset -1px -1px 0 var(--hi);
+}
+
+.mac-btn:disabled,
+.mac-btn.disabled {
+  color: var(--disabled);
   cursor: default;
 }
 
-.react-grid-item.react-draggable-dragging {
-  opacity: 0.85;
-  z-index: 100;
-  box-shadow: 0 0 24px #00ff9f44;
-  cursor: grabbing !important;
+/* Default action button — double-ring outer border */
+.mac-btn-default {
+  outline: 3px solid var(--black);
+  outline-offset: 1px;
 }
 
+/* ═══════════════════════════════════════════════
+   DIVIDERS
+═══════════════════════════════════════════════ */
+
+/* Classic Mac groove: dark line + light line = etched groove */
+.mac-groove {
+  height: 2px;
+  border-top: 1px solid var(--lo);
+  border-bottom: 1px solid var(--hi);
+  margin: 3px 0;
+}
+
+/* Single separator */
+.mac-sep {
+  height: 1px;
+  background: var(--lo);
+  margin: 2px 0;
+}
+
+/* ═══════════════════════════════════════════════
+   STATUS INDICATORS
+═══════════════════════════════════════════════ */
+
+.mac-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--black);
+  flex-shrink: 0;
+}
+.mac-dot-active  { background: #000082; }
+.mac-dot-idle    { background: #C0C0C0; box-shadow: inset 1px 1px 0 var(--lo), inset -1px -1px 0 var(--hi); }
+.mac-dot-blocked { background: #CC0000; }
+
+/* ═══════════════════════════════════════════════
+   MENU BAR
+═══════════════════════════════════════════════ */
+
+.mac-menubar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--black);
+  box-shadow: 0 1px 0 var(--hi);
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  user-select: none;
+  height: 24px;
+}
+
+.mac-menu-item {
+  padding: 1px 8px;
+  font-size: 12px;
+  cursor: default;
+  white-space: nowrap;
+}
+.mac-menu-item:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+/* ═══════════════════════════════════════════════
+   STATUS BAR
+═══════════════════════════════════════════════ */
+
+.mac-statusbar {
+  background: var(--bg);
+  border-top: 1px solid var(--black);
+  box-shadow: inset 0 1px 0 var(--hi);
+  padding: 2px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  height: 20px;
+}
+
+/* ═══════════════════════════════════════════════
+   RESIZE HANDLE
+═══════════════════════════════════════════════ */
+
+/* react-grid-layout resize handle override */
 .react-grid-item > .react-resizable-handle {
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   bottom: 0;
   right: 0;
   cursor: se-resize;
-  opacity: 0;
-  transition: opacity 0.2s;
+  background: var(--bg);
+  border-top: 1px solid var(--lo);
+  border-left: 1px solid var(--lo);
+  overflow: hidden;
+  z-index: 10;
 }
 
-.react-grid-item:hover > .react-resizable-handle { opacity: 1; }
-
-.react-resizable-handle::after {
+/* Resize grip lines (the classic Mac grow box) */
+.react-grid-item > .react-resizable-handle::before,
+.react-grid-item > .react-resizable-handle::after {
   content: '';
   position: absolute;
-  right: 4px;
-  bottom: 4px;
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid #00ff9f88;
-  border-bottom: 2px solid #00ff9f88;
+  background: var(--lo);
+}
+.react-grid-item > .react-resizable-handle::before {
+  right: 4px; bottom: 2px; width: 1px; height: 10px;
+}
+.react-grid-item > .react-resizable-handle::after {
+  right: 2px; bottom: 4px; width: 10px; height: 1px;
 }
 
+/* Dragging state */
+.react-grid-item.react-draggable-dragging {
+  opacity: 0.88;
+  z-index: 100;
+}
+
+/* Drop placeholder */
 .react-grid-item.react-grid-placeholder {
-  background: #00ff9f11 !important;
-  border: 1px dashed #00ff9f44 !important;
-  border-radius: 0 !important;
+  background: rgba(0,0,130,0.10) !important;
+  border: 1px dashed #000082 !important;
   opacity: 1 !important;
 }
 
-/* Widget drag handle */
-.widget-drag-handle {
-  cursor: grab;
-  user-select: none;
+/* ═══════════════════════════════════════════════
+   SCROLLBAR — Classic Mac 16px
+═══════════════════════════════════════════════ */
+
+::-webkit-scrollbar { width: 16px; height: 16px; }
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
+  border-left: 1px solid var(--black);
 }
-.widget-drag-handle:active { cursor: grabbing; }
-
-/* Pixel borders */
-.pixel-border         { border: 1px solid #1a1a2e; }
-.pixel-border-neon    { border: 1px solid #00ff9f44; box-shadow: 0 0 8px #00ff9f22, inset 0 0 8px #00ff9f11; }
-.pixel-border-pink    { border: 1px solid #ff00cc44; box-shadow: 0 0 8px #ff00cc22, inset 0 0 8px #ff00cc11; }
-.pixel-border-yellow  { border: 1px solid #ffd70044; box-shadow: 0 0 8px #ffd70022, inset 0 0 8px #ffd70011; }
-.pixel-border-blue    { border: 1px solid #00cfff44; box-shadow: 0 0 8px #00cfff22, inset 0 0 8px #00cfff11; }
-.pixel-border-red     { border: 1px solid #ff386044; box-shadow: 0 0 8px #ff386022; }
-.pixel-border-orange  { border: 1px solid #ff8c0044; box-shadow: 0 0 8px #ff8c0022, inset 0 0 8px #ff8c0011; }
-
-/* Neon text */
-.neon-text    { color: #00ff9f; text-shadow: 0 0 8px #00ff9f, 0 0 20px #00ff9f66; }
-.pink-text    { color: #ff00cc; text-shadow: 0 0 8px #ff00cc, 0 0 20px #ff00cc66; }
-.yellow-text  { color: #ffd700; text-shadow: 0 0 8px #ffd700, 0 0 20px #ffd70066; }
-.blue-text    { color: #00cfff; text-shadow: 0 0 8px #00cfff, 0 0 20px #00cfff66; }
-.red-text     { color: #ff3860; text-shadow: 0 0 8px #ff3860, 0 0 20px #ff386066; }
-.orange-text  { color: #ff8c00; text-shadow: 0 0 8px #ff8c00, 0 0 20px #ff8c0066; }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #0d0d1a; }
-::-webkit-scrollbar-thumb { background: #1a1a2e; }
-::-webkit-scrollbar-thumb:hover { background: #00ff9f44; }
-
-/* Cursor blink */
-.cursor::after { content: '█'; animation: blink 1s step-end infinite; color: #00ff9f; }
-
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-@keyframes pulseNeon { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-@keyframes flicker {
-  0%, 95%, 100% { opacity: 1; }
-  96% { opacity: 0.8; } 97% { opacity: 1; } 98% { opacity: 0.6; } 99% { opacity: 1; }
+::-webkit-scrollbar-thumb {
+  background: var(--bg);
+  border: 1px solid var(--black);
+  box-shadow: inset 1px 1px 0 var(--hi), inset -1px -1px 0 var(--lo);
+  min-height: 20px;
 }
+::-webkit-scrollbar-thumb:active {
+  background: var(--bg-dark);
+  box-shadow: inset 1px 1px 0 var(--lo), inset -1px -1px 0 var(--hi);
+}
+::-webkit-scrollbar-button {
+  background: var(--bg);
+  border: 1px solid var(--black);
+  box-shadow: inset 1px 1px 0 var(--hi), inset -1px -1px 0 var(--lo);
+  height: 16px;
+  width: 16px;
+}
+::-webkit-scrollbar-button:active {
+  box-shadow: inset 1px 1px 0 var(--lo), inset -1px -1px 0 var(--hi);
+}
+::-webkit-scrollbar-corner { background: var(--bg); }
+
+/* ═══════════════════════════════════════════════
+   LINK RESET
+═══════════════════════════════════════════════ */
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD V2 — TOKEN SYSTEM BASE
+   Uses design tokens from tokens.css
+═══════════════════════════════════════════════ */
+
+body.dashboard-v2 {
+  background: var(--color-bg);
+  font-family: var(--font-primary);
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
+}
+
+body.dashboard-v2 * {
+  box-sizing: border-box;
+}
+
+.dashboard-v2-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  background: #0A0A0A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-button);
+  padding: 10px 24px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary:hover { background: #2A2A2A; }
+
+.btn-secondary {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  border: none;
+  border-radius: var(--radius-button);
+  padding: 10px 24px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-secondary:hover { background: #E0DED9; }

@@ -1,35 +1,36 @@
 'use client'
 
 const projects = [
-  { id: 'p001', name: 'Studio Infrastructure', phase: 'Deployment',    agent: 'PROXY + CODEXYON', priority: 'HIGH', status: 'active',  progress: 70 },
-  { id: 'p002', name: 'Brand Identity System',  phase: 'Pending Brief', agent: 'NARRYON',          priority: 'HIGH', status: 'pending', progress: 0  },
-  { id: 'p003', name: 'Social Media Pipeline',  phase: 'Planning',      agent: 'VIRYON + CODEXYON',priority: 'MED',  status: 'pending', progress: 0  },
-  { id: 'p004', name: 'First Content Drop',     phase: 'Awaiting Assets',agent: 'VISUYON',         priority: 'MED',  status: 'pending', progress: 0  },
+  { id: 'p001', name: 'Studio Infrastructure',  phase: 'Deployment',      agent: 'PROXY + CODEXYON',  priority: 'HIGH', status: 'active',  progress: 75 },
+  { id: 'p002', name: 'Brand Identity System',   phase: 'Pending Brief',   agent: 'NARRYON',           priority: 'HIGH', status: 'pending', progress: 0  },
+  { id: 'p003', name: 'Social Media Pipeline',   phase: 'Planning',        agent: 'VIRYON + CODEXYON', priority: 'MED',  status: 'pending', progress: 0  },
+  { id: 'p004', name: 'First Content Drop',      phase: 'Awaiting Assets', agent: 'VISUYON',           priority: 'MED',  status: 'pending', progress: 0  },
 ]
 
-const priorityColor: Record<string,string> = { HIGH: 'red-text', MED: 'yellow-text', LOW: 'text-cyber-muted' }
-const statusColor:   Record<string,string> = { active: 'neon-text', pending: 'text-cyber-muted', blocked: 'red-text', done: 'text-cyber-muted' }
-const statusBorder:  Record<string,string> = { active: 'pixel-border-neon', pending: 'pixel-border', blocked: 'pixel-border-red', done: 'pixel-border' }
+const priorityColor: Record<string, string> = { HIGH: '#CC0000', MED: '#806000', LOW: '#808080' }
+const statusColor:   Record<string, string> = { active: '#000082', pending: '#808080', blocked: '#CC0000', done: '#808080' }
 
 export default function ProjectWidget() {
   return (
-    <div className="flex flex-col gap-2">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {projects.map((p) => (
-        <div key={p.id} className={`${statusBorder[p.status]} bg-cyber-bg p-3`}>
-          <div className="flex justify-between items-start gap-2 mb-1">
-            <span className="font-pixel text-xs text-cyber-text leading-tight">{p.name}</span>
-            <div className="flex gap-2 shrink-0">
-              <span className={`font-mono text-xs uppercase ${priorityColor[p.priority]}`}>{p.priority}</span>
-              <span className={`font-mono text-xs uppercase ${statusColor[p.status]}`}>{p.status}</span>
+        <div key={p.id} className="mac-inset" style={{ padding: '4px 6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 4, marginBottom: 2 }}>
+            <span style={{ fontWeight: 'bold', fontSize: 12 }}>{p.name}</span>
+            <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+              <span style={{ fontSize: 10, color: priorityColor[p.priority], fontWeight: 'bold' }}>{p.priority}</span>
+              <span style={{ fontSize: 10, color: statusColor[p.status], textTransform: 'uppercase' }}>{p.status}</span>
             </div>
           </div>
-          <div className="font-mono text-xs text-cyber-muted">{p.phase} · {p.agent}</div>
+          <div style={{ fontSize: 10, color: '#808080', marginBottom: p.status === 'active' ? 4 : 0 }}>
+            {p.phase} · {p.agent}
+          </div>
           {p.status === 'active' && (
-            <div className="mt-2">
-              <div className="w-full h-1 bg-cyber-border">
-                <div className="h-full bg-cyber-neon" style={{ width: `${p.progress}%` }} />
+            <div>
+              <div className="mac-inset" style={{ height: 8, padding: 0, position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${p.progress}%`, background: '#000082' }} />
               </div>
-              <div className="text-right font-mono text-xs text-cyber-muted mt-0.5">{p.progress}%</div>
+              <div style={{ fontSize: 10, color: '#808080', textAlign: 'right', marginTop: 2 }}>{p.progress}%</div>
             </div>
           )}
         </div>
