@@ -50,14 +50,13 @@ const pipelineSteps = [
 
 const DEFAULT_LAYOUTS: ResponsiveLayouts = {
   lg: [
-    { i: 'stats',    x: 0, y: 0,  w: 12, h: 3,  minW: 6, minH: 2 },
-    { i: 'agents',   x: 0, y: 3,  w: 4,  h: 10, minW: 2, minH: 4 },
-    { i: 'weather',  x: 4, y: 3,  w: 2,  h: 4,  minW: 2, minH: 3 },
-    { i: 'clock',    x: 6, y: 3,  w: 2,  h: 4,  minW: 2, minH: 3 },
-    { i: 'tasks',    x: 8, y: 3,  w: 4,  h: 6,  minW: 2, minH: 4 },
-    { i: 'pipeline', x: 4, y: 7,  w: 8,  h: 4,  minW: 4, minH: 3 },
-    { i: 'alerts',   x: 0, y: 13, w: 5,  h: 5,  minW: 3, minH: 3 },
-    { i: 'activity', x: 5, y: 13, w: 7,  h: 5,  minW: 4, minH: 3 },
+    { i: 'agents',   x: 0, y: 0,  w: 4,  h: 10, minW: 2, minH: 4 },
+    { i: 'weather',  x: 4, y: 0,  w: 2,  h: 4,  minW: 2, minH: 3 },
+    { i: 'clock',    x: 6, y: 0,  w: 2,  h: 4,  minW: 2, minH: 3 },
+    { i: 'tasks',    x: 8, y: 0,  w: 4,  h: 6,  minW: 2, minH: 4 },
+    { i: 'pipeline', x: 4, y: 6,  w: 8,  h: 4,  minW: 4, minH: 3 },
+    { i: 'alerts',   x: 0, y: 10, w: 5,  h: 5,  minW: 3, minH: 3 },
+    { i: 'activity', x: 5, y: 10, w: 7,  h: 5,  minW: 4, minH: 3 },
   ],
 }
 
@@ -106,29 +105,6 @@ function GridContent({
           dragConfig={{ enabled: true, handle: '.drag-handle', bounded: false }}
           resizeConfig={{ enabled: true, handles: ['se'] }}
         >
-          {/* STATS */}
-          <div key="stats" className="widget">
-            <div className="widget-label">System Metrics</div>
-            <DragHandle />
-            <div className="stats-row">
-              {[
-                { val: '2 / 8', lbl: 'Agents Online'  },
-                { val: '1',     lbl: 'Projects'        },
-                { val: 'LIVE',  lbl: 'Pipeline'        },
-                { val: '0',     lbl: 'Content Pieces'  },
-                { val: '2',     lbl: 'Alerts'          },
-              ].map((s, i) => (
-                <div className="stat-col" key={i}>
-                  <div className="stat-val" style={
-                    s.lbl === 'Alerts' ? { color: '#E03E3E' } :
-                    s.val === 'LIVE'   ? { fontSize: '20px', paddingTop: '6px' } : {}
-                  }>{s.val}</div>
-                  <div className="stat-lbl">{s.lbl}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* AGENTS */}
           <div key="agents" className="widget">
             <div className="widget-label">Agent Matrix</div>
