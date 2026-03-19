@@ -305,12 +305,34 @@ export default function Dashboard() {
       <div className="main-area">
 
         <header className="topbar">
-          <div className="topbar-title">Dashboard</div>
+          <div className="topbar-left">
+            <span className="topbar-title">Dashboard</span>
+          </div>
+
+          <div className="topbar-center">
+            {[
+              { val: '2/8',  lbl: 'agents online', danger: false },
+              { val: '1',    lbl: 'projects',       danger: false },
+              { val: 'LIVE', lbl: 'pipeline',       danger: false },
+              { val: '0',    lbl: 'content',        danger: false },
+              { val: '2',    lbl: 'alerts',         danger: true  },
+            ].map((s, i) => (
+              <div className="topbar-stat" key={i}>
+                <span className="topbar-stat-val" style={s.danger ? { color: '#E03E3E' } : {}}>
+                  {s.val}
+                </span>
+                <span className="topbar-stat-lbl">{s.lbl}</span>
+                {i < 4 && <div className="topbar-divider" />}
+              </div>
+            ))}
+          </div>
+
           <div className="topbar-right">
             <span className="badge live">● LIVE</span>
-            <span className="badge">v1.4</span>
             <span className="badge">{time} CST</span>
-            <span className="theme-icon">{theme === 'light' ? '☀' : '☾'}</span>
+            <span className="theme-icon" style={{ fontSize: '11px', color: 'var(--color-text-2)' }}>
+              {theme === 'light' ? '☀' : '☾'}
+            </span>
             <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle dark mode" />
           </div>
         </header>
