@@ -220,7 +220,7 @@ export default function FloatingChat() {
  </div>
  <div style={{
  padding:'7px 10px',
- fontSize:'10px', lineHeight:1.5,
+ lineHeight:1.5,
  background: m.from==='onem' ?
  'var(--color-text)' : 'var(--color-surface-2)',
  color: m.from==='onem' ?
