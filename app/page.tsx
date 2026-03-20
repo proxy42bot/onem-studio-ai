@@ -357,7 +357,7 @@ export default function Dashboard() {
         </main>
 
         <footer className="footer">
-          <div className="footer-left">ONEM STUDIO AI © 2026 · dashboard-v2.2</div>
+          <div className="footer-left">ONEM STUDIO AI © 2026 · dashboard-v2.4</div>
           <div className="footer-right">
             <a className="footer-link" href="https://github.com/proxy42bot/onem-studio-ai">GitHub</a>
             <a className="footer-link" href="#">Docs</a>
