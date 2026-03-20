@@ -251,7 +251,7 @@ export default function Dashboard() {
         <nav className="sidebar-nav">
           <div className="nav-section-label">Studio</div>
           <a className="nav-item active" href="#"><div className="nav-dot" style={{ background: 'var(--color-text)' }} />Dashboard</a>
-          <a className="nav-item" href="#"><div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />Agents</a>
+          <a className="nav-item" href="/agents"><div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />Agents</a>
           <a className="nav-item" href="#"><div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />Projects</a>
           <div className="nav-section-label">Content</div>
           <a className="nav-item" href="#"><div className="nav-dot" style={{ background: 'var(--color-text-3)' }} />Pipeline</a>
