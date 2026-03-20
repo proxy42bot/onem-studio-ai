@@ -50,7 +50,6 @@ export default function AgentsPage() {
 
  return (
  <div style={{
- marginLeft:'var(--sidebar-width)',
  display:'flex', flexDirection:'column',
  height:'100vh', overflow:'hidden',
  background:'var(--color-bg)'

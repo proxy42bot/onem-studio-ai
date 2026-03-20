@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import '../styles/globals.css'
+import Sidebar from '../components/Sidebar'
 import FloatingChat from '../components/FloatingChat'
 
 export const metadata: Metadata = {
@@ -14,7 +15,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body>{children}<FloatingChat /></body>
+      <body>
+        <div style={{display:'flex', minHeight:'100vh'}}>
+          <Sidebar />
+          <div style={{
+            flex:1,
+            marginLeft:'var(--sidebar-width)',
+            display:'flex',
+            flexDirection:'column',
+            minHeight:'100vh'
+          }}>
+            {children}
+          </div>
+        </div>
+        <FloatingChat />
+      </body>
     </html>
   )
 }
