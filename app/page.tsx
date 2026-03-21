@@ -51,8 +51,7 @@ const pipelineSteps = [
 const DEFAULT_LAYOUTS: ResponsiveLayouts = {
   lg: [
     { i: 'agents',   x: 0, y: 0,  w: 4,  h: 10, minW: 2, minH: 4 },
-    { i: 'weather',  x: 4, y: 0,  w: 2,  h: 4,  minW: 2, minH: 3 },
-    { i: 'clock',    x: 6, y: 0,  w: 2,  h: 4,  minW: 2, minH: 3 },
+    { i: 'time-weather', x: 4, y: 0, w: 3, h: 4, minW: 2, minH: 3 },
     { i: 'tasks',    x: 8, y: 0,  w: 4,  h: 6,  minW: 2, minH: 4 },
     { i: 'pipeline', x: 4, y: 6,  w: 8,  h: 4,  minW: 4, minH: 3 },
     { i: 'alerts',   x: 0, y: 10, w: 5,  h: 5,  minW: 3, minH: 3 },
@@ -123,21 +122,30 @@ function GridContent({
             ))}
           </div>
 
-          {/* WEATHER */}
-          <div key="weather" className="widget">
-            <div className="widget-label">Weather · San Pedro GG</div>
+          {/* TIME & WEATHER */}
+          <div key="time-weather" className="widget">
+            <div className="widget-label">Time & Weather · San Pedro GG</div>
             <DragHandle />
-            <div className="weather-temp">24°</div>
-            <div className="weather-desc">Partly cloudy</div>
-            <div className="weather-desc" style={{ marginTop: '2px', fontSize: '10px' }}>San Pedro GG · MX</div>
-          </div>
-
-          {/* CLOCK */}
-          <div key="clock" className="widget">
-            <div className="widget-label">Time · CST</div>
-            <DragHandle />
-            <div className="clock-time">{time}</div>
-            <div className="clock-date">{date}</div>
+            <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+              <div>
+                <div style={{
+                  fontSize:'36px',fontWeight:700,
+                  color:'var(--color-text)',letterSpacing:'-0.02em',lineHeight:1
+                }}>{time}</div>
+                <div style={{fontSize:'10px',color:'var(--color-text-2)',marginTop:'4px'}}>
+                  {date} · CST
+                </div>
+              </div>
+              <div style={{borderTop:'1px solid var(--color-border)',paddingTop:'10px'}}>
+                <div style={{
+                  fontSize:'36px',fontWeight:700,
+                  color:'var(--color-text)',letterSpacing:'-0.02em',lineHeight:1
+                }}>24°</div>
+                <div style={{fontSize:'10px',color:'var(--color-text-2)',marginTop:'4px'}}>
+                  Partly cloudy · MX
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* TASKS */}

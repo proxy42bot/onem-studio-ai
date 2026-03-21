@@ -17,16 +17,16 @@ const AREAS = {
 }
 
 const AGENTS = [
- { id:'PROXY', initials:'PX', color:'#7f77dd', x:4, y:4, state:'working', dir:1 },
- { id:'TRENDYON', initials:'TR', color:'#1d9e75', x:25, y:3, state:'idle', dir:1 },
- { id:'VIRYON', initials:'VR', color:'#639922', x:30, y:5, state:'idle', dir:-1 },
- { id:'NARRYON', initials:'NA', color:'#d85a30', x:37, y:3, state:'idle', dir:1 },
- { id:'VISUYON', initials:'VI', color:'#d4537e', x:42, y:5, state:'idle', dir:-1 },
- { id:'RENDERYON', initials:'RX', color:'#378add', x:40, y:3, state:'idle', dir:1 },
- { id:'CODEXYON', initials:'CX', color:'#ba7517', x:5, y:13, state:'working', dir:1 },
- { id:'FINYON', initials:'FI', color:'#888780', x:14, y:13, state:'sleeping', dir:-1 },
- { id:'TRENDYON2', initials:'TR', color:'#1d9e75', x:28, y:13, state:'sleeping', dir:1 },
- { id:'VIRYON2', initials:'VR', color:'#639922', x:35, y:15, state:'sleeping', dir:-1 },
+ { id:'PROXY', initials:'PX', color:'#FFFFFF', x:4, y:4, state:'working', dir:1 },
+ { id:'TRENDYON', initials:'TR', color:'#7f77dd', x:25, y:3, state:'idle', dir:1 },
+ { id:'VIRYON', initials:'VR', color:'#3d9e3d', x:30, y:5, state:'idle', dir:-1 },
+ { id:'NARRYON', initials:'NA', color:'#E03E3E', x:37, y:3, state:'idle', dir:1 },
+ { id:'VISUYON', initials:'VI', color:'#60B4F0', x:42, y:5, state:'idle', dir:-1 },
+ { id:'RENDERYON', initials:'RX', color:'#F5C518', x:40, y:3, state:'idle', dir:1 },
+ { id:'CODEXYON', initials:'CX', color:'#0A0A0A', x:5, y:13, state:'working', dir:1 },
+ { id:'FINYON', initials:'FI', color:'#D4A017', x:14, y:13, state:'sleeping', dir:-1 },
+ { id:'TRENDYON2', initials:'TR', color:'#7f77dd', x:28, y:13, state:'sleeping', dir:1 },
+ { id:'VIRYON2', initials:'VR', color:'#3d9e3d', x:35, y:15, state:'sleeping', dir:-1 },
 ]
 
 const STATE_COLORS: Record<string,string> = {
@@ -365,14 +365,14 @@ export default function StudioWidget() {
  display:'flex', gap:'6px', overflowX:'auto'
  }}>
  {[
- {id:'PROXY',color:'#7f77dd',state:'working'},
- {id:'TRENDYON',color:'#1d9e75',state:'idle'},
- {id:'VIRYON',color:'#639922',state:'idle'},
- {id:'NARRYON',color:'#d85a30',state:'idle'},
- {id:'VISUYON',color:'#d4537e',state:'idle'},
- {id:'RENDERYON',color:'#378add',state:'idle'},
- {id:'CODEXYON',color:'#ba7517',state:'working'},
- {id:'FINYON',color:'#888780',state:'sleeping'},
+ {id:'PROXY',color:'#FFFFFF',state:'working'},
+ {id:'TRENDYON',color:'#7f77dd',state:'idle'},
+ {id:'VIRYON',color:'#3d9e3d',state:'idle'},
+ {id:'NARRYON',color:'#E03E3E',state:'idle'},
+ {id:'VISUYON',color:'#60B4F0',state:'idle'},
+ {id:'RENDERYON',color:'#F5C518',state:'idle'},
+ {id:'CODEXYON',color:'#0A0A0A',state:'working'},
+ {id:'FINYON',color:'#D4A017',state:'sleeping'},
  ].map(a => (
  <div key={a.id} style={{
  display:'flex', alignItems:'center', gap:'4px',
