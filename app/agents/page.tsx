@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import StudioWidget from '../../components/StudioWidget'
 
 const AGENTS = [
@@ -47,6 +47,33 @@ const AGENTS = [
 
 export default function AgentsPage() {
  const [selected, setSelected] = useState<typeof AGENTS[0] | null>(null)
+ const popupRef = useRef<HTMLDivElement>(null)
+ const [popupPos, setPopupPos] = useState({x: typeof window !== 'undefined' ? window.innerWidth/2 - 170 : 400, y: typeof window !== 'undefined' ? window.innerHeight/2 - 200 : 200})
+ const dragging = useRef(false)
+ const dragOffset = useRef({x:0, y:0})
+
+ function startDrag(e: React.MouseEvent) {
+ if((e.target as HTMLElement).closest('button')) return
+ dragging.current = true
+ dragOffset.current = {
+ x: e.clientX - popupPos.x,
+ y: e.clientY - popupPos.y
+ }
+ const onMove = (ev: MouseEvent) => {
+ if(!dragging.current) return
+ setPopupPos({
+ x: ev.clientX - dragOffset.current.x,
+ y: ev.clientY - dragOffset.current.y
+ })
+ }
+ const onUp = () => {
+ dragging.current = false
+ document.removeEventListener('mousemove', onMove)
+ document.removeEventListener('mouseup', onUp)
+ }
+ document.addEventListener('mousemove', onMove)
+ document.addEventListener('mouseup', onUp)
+ }
 
  return (
  <div style={{
@@ -196,30 +223,42 @@ export default function AgentsPage() {
 
  {/* AGENT POPUP */}
  {selected && (
- <div onClick={() => setSelected(null)} style={{
+ <div
+ onClick={() => setSelected(null)}
+ style={{
  position:'fixed', inset:0,
  background:'rgba(0,0,0,0.3)',
- display:'flex', alignItems:'center', justifyContent:'center',
  zIndex:500
- }}>
- <div onClick={e => e.stopPropagation()} style={{
- width:'320px',
+ }}
+ >
+ <div
+ ref={popupRef}
+ onClick={e => e.stopPropagation()}
+ style={{
+ position:'fixed',
+ top: popupPos.y, left: popupPos.x,
+ width:'340px',
  background:'var(--color-surface)',
  borderRadius:'16px',
  border:'1px solid var(--color-border)',
  boxShadow:'0 8px 32px rgba(0,0,0,0.18)',
- overflow:'hidden'
- }}>
- {/* Popup top */}
- <div style={{
- height:'80px', background:selected.color,
- position:'relative', display:'flex',
- alignItems:'flex-end', padding:'12px 16px'
- }}>
- <div style={{
- width:'52px', height:'52px', borderRadius:'14px',
  overflow:'hidden',
- border:'2px solid rgba(255,255,255,0.3)'
+ cursor:'move',
+ userSelect:'none',
+ }}
+ onMouseDown={startDrag}
+ >
+ {/* TOP — image left, info right */}
+ <div style={{
+ padding:'16px', display:'flex',
+ alignItems:'center', gap:'14px',
+ borderBottom:'1px solid var(--color-border)',
+ position:'relative'
+ }}>
+ <div style={{
+ width:'80px', height:'80px',
+ borderRadius:'14px', overflow:'hidden',
+ flexShrink:0, border:'2px solid var(--color-border)'
  }}>
  <img
  src={`/avatars/${selected.id.toLowerCase()}.png`}
@@ -227,73 +266,74 @@ export default function AgentsPage() {
  style={{width:'100%',height:'100%',objectFit:'cover'}}
  />
  </div>
- <button onClick={() => setSelected(null)} style={{
- position:'absolute', top:'10px', right:'10px',
- width:'22px', height:'22px',
- background:'rgba(0,0,0,0.2)', border:'none',
- borderRadius:'50%', cursor:'pointer',
- color:'#fff', fontSize:'10px', display:'flex',
- alignItems:'center', justifyContent:'center'
- }}>✕</button>
+ <div style={{flex:1,minWidth:0}}>
+ <div style={{fontSize:'18px',fontWeight:700,color:'var(--color-text)'}}>
+ {selected.id}
  </div>
- {/* Popup body */}
- <div style={{padding:'14px 16px', display:'flex',
- flexDirection:'column', gap:'12px'}}>
- <div>
- <div style={{display:'flex',alignItems:'center',
- justifyContent:'space-between'}}>
- <span style={{fontSize:'16px',fontWeight:700,
- color:'var(--color-text)'}}>{selected.id}</span>
- <span style={{display:'flex',alignItems:'center',gap:'5px',
- fontSize:'10px',color:'var(--color-text)',fontWeight:500}}>
- <div style={{width:'7px',height:'7px',borderRadius:'50%',
- background:selected.status==='active'?
- 'var(--color-text)':'var(--color-text-3)'}}/>
- {selected.status}
+ <div style={{
+ fontSize:'10px',color:'var(--color-text-2)',
+ textTransform:'uppercase',letterSpacing:'.08em',marginTop:'2px'
+ }}>
+ {selected.role} · {selected.model}
+ </div>
+ <div style={{display:'flex',alignItems:'center',gap:'5px',marginTop:'6px'}}>
+ <div style={{
+ width:'7px',height:'7px',borderRadius:'50%',
+ background:selected.status==='active'?'var(--color-text)':'var(--color-text-3)'
+ }}/>
+ <span style={{fontSize:'10px',color:'var(--color-text-2)'}}>
+ {selected.status} · {selected.area}
  </span>
  </div>
- <div style={{fontSize:'10px',color:'var(--color-text-2)',
- textTransform:'uppercase',letterSpacing:'0.08em',marginTop:'2px'}}>
- {selected.role} · {selected.model} · {selected.area}
  </div>
+ <button
+ onClick={() => setSelected(null)}
+ style={{
+ position:'absolute',top:'10px',right:'10px',
+ width:'22px',height:'22px',
+ background:'var(--color-surface-2)',border:'none',
+ borderRadius:'50%',cursor:'pointer',
+ color:'var(--color-text-2)',fontSize:'12px',
+ display:'flex',alignItems:'center',justifyContent:'center'
+ }}
+ >×</button>
  </div>
+
+ {/* BODY */}
+ <div style={{padding:'14px 16px',display:'flex',flexDirection:'column',gap:'12px'}}>
  <p style={{fontSize:'11px',color:'var(--color-text-2)',lineHeight:1.5}}>
  {selected.desc}
  </p>
  <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'8px'}}>
  {[
- {val:selected.runs, lbl:'Runs'},
- {val:selected.tokens, lbl:'Tokens'},
- {val:selected.uptime, lbl:'Uptime'},
+ {val:selected.runs,lbl:'Runs'},
+ {val:selected.tokens,lbl:'Tokens'},
+ {val:selected.uptime,lbl:'Uptime'},
  ].map((s,i) => (
  <div key={i} style={{
  background:'var(--color-surface-2)',
- borderRadius:'8px', padding:'8px', textAlign:'center'
+ borderRadius:'8px',padding:'8px',textAlign:'center'
  }}>
- <div style={{fontSize:'14px',fontWeight:700,
- color:'var(--color-text)'}}>{s.val}</div>
+ <div style={{fontSize:'14px',fontWeight:700,color:'var(--color-text)'}}>{s.val}</div>
  <div style={{fontSize:'8px',color:'var(--color-text-3)',
- textTransform:'uppercase',letterSpacing:'0.06em',
- marginTop:'2px'}}>{s.lbl}</div>
+ textTransform:'uppercase',letterSpacing:'.06em',marginTop:'2px'}}>{s.lbl}</div>
  </div>
  ))}
  </div>
  <div style={{display:'flex',flexWrap:'wrap',gap:'4px'}}>
  {selected.tags.map((tag,i) => (
  <span key={i} style={{
- fontSize:'9px',
- background:'var(--color-surface-2)',
- borderRadius:'99px', padding:'3px 8px',
- color:'var(--color-text)',
- border:'1px solid var(--color-border)'
+ fontSize:'9px',background:'var(--color-surface-2)',
+ borderRadius:'99px',padding:'3px 8px',
+ color:'var(--color-text)',border:'1px solid var(--color-border)'
  }}>{tag}</span>
  ))}
  </div>
  <button style={{
- background:'var(--color-text)', color:'var(--color-bg)',
- border:'none', borderRadius:'var(--radius-button)',
- padding:'9px 0', fontSize:'11px', fontWeight:500,
- cursor:'pointer', width:'100%'
+ background:'var(--color-text)',color:'var(--color-bg)',
+ border:'none',borderRadius:'var(--radius-button)',
+ padding:'9px',fontSize:'11px',fontWeight:500,
+ cursor:'pointer',width:'100%'
  }}>
  Chat with {selected.id} →
  </button>

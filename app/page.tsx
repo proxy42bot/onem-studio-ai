@@ -1,18 +1,18 @@
 'use client'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout'
 import type { Layout, ResponsiveLayouts } from 'react-grid-layout'
 import '../styles/globals.css'
 
 const agents = [
-  { name: 'PROXY',     role: 'Orchestrator',     status: 'active' },
-  { name: 'TRENDYON',  role: 'Trend Scout',       status: 'idle'   },
-  { name: 'NARRYON',   role: 'Narrative',         status: 'idle'   },
-  { name: 'VISUYON',   role: 'Visual Production', status: 'idle'   },
-  { name: 'RENDERYON', role: 'Asset Pipeline',    status: 'idle'   },
-  { name: 'VIRYON',    role: 'Optimize & Reach',  status: 'idle'   },
-  { name: 'CODEXYON',  role: 'Build & Security',  status: 'active' },
-  { name: 'FINYON',    role: 'Analytics',         status: 'idle'   },
+  { name: 'PROXY',     role: 'Orchestrator',     status: 'active', model:'haiku', desc:'Validates every input from ONEM and decides which agents to activate, in what order, and whether to skip based on cached outputs.', runs:142, tokens:'48K', uptime:'99%', tags:['routing','orchestration','cache'] },
+  { name: 'TRENDYON',  role: 'Trend Scout',       status: 'idle',   model:'haiku', desc:'Monitors Instagram, YouTube Shorts and X every 48h to surface trending topics and formats.', runs:28, tokens:'12K', uptime:'100%', tags:['trends','instagram','youtube'] },
+  { name: 'NARRYON',   role: 'Narrative',         status: 'idle',   model:'sonnet', desc:'Activates only on new project briefs. Writes brand story, core message, tone keywords and content pillars.', runs:6, tokens:'18K', uptime:'100%', tags:['creative','narrative','brand'] },
+  { name: 'VISUYON',   role: 'Visual Production', status: 'idle',   model:'sonnet', desc:'Receives NARRYON handoff and produces visual direction brief and Replicate-ready image prompts.', runs:6, tokens:'14K', uptime:'100%', tags:['visual','replicate','prompts'] },
+  { name: 'RENDERYON', role: 'Asset Pipeline',    status: 'idle',   model:'haiku', desc:'Manages all production jobs from prompt to final delivered file. Tracks versions, formats and platform export specs.', runs:18, tokens:'8K', uptime:'98%', tags:['pipeline','render','formats'] },
+  { name: 'VIRYON',    role: 'Optimize & Reach',  status: 'idle',   model:'haiku', desc:'Reformats and optimizes content natively per platform. Watch time and saves are primary metrics.', runs:20, tokens:'16K', uptime:'100%', tags:['instagram','youtube','optimization'] },
+  { name: 'CODEXYON',  role: 'Build & Security',  status: 'active', model:'sonnet', desc:'Handles all code, deployment, automation and security tasks. Operates in BUILD or GUARD mode.', runs:34, tokens:'82K', uptime:'99%', tags:['build','deploy','security'] },
+  { name: 'FINYON',    role: 'Analytics',         status: 'idle',   model:'haiku', desc:'Runs daily cron. Reports revenue, engagement metrics, top/worst performing content and priority actions.', runs:24, tokens:'10K', uptime:'100%', tags:['analytics','revenue','metrics'] },
 ]
 
 const alerts = [
@@ -81,11 +81,13 @@ function GridContent({
   onLayoutChange,
   time,
   date,
+  onAgentClick,
 }: {
   layouts: ResponsiveLayouts
   onLayoutChange: (_: Layout, all: ResponsiveLayouts) => void
   time: string
   date: string
+  onAgentClick: (a: typeof agents[0]) => void
 }) {
   const { width, containerRef, mounted } = useContainerWidth()
 
@@ -109,7 +111,7 @@ function GridContent({
             <div className="widget-label">Agent Matrix</div>
             <DragHandle />
             {agents.map((a, i) => (
-              <div className="agent-row" key={i}>
+              <div className="agent-row" key={i} onClick={() => onAgentClick(a)} style={{cursor:'pointer'}}>
                 <div className="agent-avatar" style={{overflow:'hidden',borderRadius:'6px'}}>
                   <img
                     src={`/avatars/${a.name.toLowerCase()}.png`}
@@ -219,6 +221,39 @@ export default function Dashboard() {
   const [time,    setTime]    = useState('')
   const [date,    setDate]    = useState('')
   const [layouts, setLayouts] = useState<ResponsiveLayouts>(DEFAULT_LAYOUTS)
+  const [selected, setSelected] = useState<typeof agents[0] | null>(null)
+  const popupRef = useRef<HTMLDivElement>(null)
+  const [popupPos, setPopupPos] = useState({x: 0, y: 0})
+  const dragging = useRef(false)
+  const dragOffset = useRef({x:0, y:0})
+
+  function openPopup(a: typeof agents[0]) {
+    setPopupPos({x: window.innerWidth/2 - 170, y: window.innerHeight/2 - 200})
+    setSelected(a)
+  }
+
+  function startDrag(e: React.MouseEvent) {
+    if((e.target as HTMLElement).closest('button')) return
+    dragging.current = true
+    dragOffset.current = {
+      x: e.clientX - popupPos.x,
+      y: e.clientY - popupPos.y
+    }
+    const onMove = (ev: MouseEvent) => {
+      if(!dragging.current) return
+      setPopupPos({
+        x: ev.clientX - dragOffset.current.x,
+        y: ev.clientY - dragOffset.current.y
+      })
+    }
+    const onUp = () => {
+      dragging.current = false
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+    }
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup', onUp)
+  }
 
   useEffect(() => {
     const tick = () => {
@@ -277,7 +312,7 @@ export default function Dashboard() {
         </header>
 
         <main className="content-area">
-          <GridContent layouts={layouts} onLayoutChange={saveLayout} time={time} date={date} />
+          <GridContent layouts={layouts} onLayoutChange={saveLayout} time={time} date={date} onAgentClick={openPopup} />
         </main>
 
         <footer className="footer">
@@ -288,6 +323,114 @@ export default function Dashboard() {
             <span className="footer-link">● Operational</span>
           </div>
         </footer>
+
+      {/* AGENT POPUP */}
+      {selected && (
+        <div
+          onClick={() => setSelected(null)}
+          style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.3)',zIndex:500}}
+        >
+          <div
+            ref={popupRef}
+            onClick={e => e.stopPropagation()}
+            style={{
+              position:'fixed',
+              top: popupPos.y, left: popupPos.x,
+              width:'340px',
+              background:'var(--color-surface)',
+              borderRadius:'16px',
+              border:'1px solid var(--color-border)',
+              boxShadow:'0 8px 32px rgba(0,0,0,0.18)',
+              overflow:'hidden',
+              cursor:'move',
+              userSelect:'none',
+            }}
+            onMouseDown={startDrag}
+          >
+            <div style={{
+              padding:'16px',display:'flex',
+              alignItems:'center',gap:'14px',
+              borderBottom:'1px solid var(--color-border)',
+              position:'relative'
+            }}>
+              <div style={{
+                width:'80px',height:'80px',
+                borderRadius:'14px',overflow:'hidden',
+                flexShrink:0,border:'2px solid var(--color-border)'
+              }}>
+                <img
+                  src={`/avatars/${selected.name.toLowerCase()}.png`}
+                  alt={selected.name}
+                  style={{width:'100%',height:'100%',objectFit:'cover'}}
+                />
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:'18px',fontWeight:700,color:'var(--color-text)'}}>
+                  {selected.name}
+                </div>
+                <div style={{fontSize:'10px',color:'var(--color-text-2)',textTransform:'uppercase',letterSpacing:'.08em',marginTop:'2px'}}>
+                  {selected.role} · {selected.model}
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:'5px',marginTop:'6px'}}>
+                  <div style={{
+                    width:'7px',height:'7px',borderRadius:'50%',
+                    background:selected.status==='active'?'var(--color-text)':'var(--color-text-3)'
+                  }}/>
+                  <span style={{fontSize:'10px',color:'var(--color-text-2)'}}>{selected.status}</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelected(null)}
+                style={{
+                  position:'absolute',top:'10px',right:'10px',
+                  width:'22px',height:'22px',
+                  background:'var(--color-surface-2)',border:'none',
+                  borderRadius:'50%',cursor:'pointer',
+                  color:'var(--color-text-2)',fontSize:'12px',
+                  display:'flex',alignItems:'center',justifyContent:'center'
+                }}
+              >×</button>
+            </div>
+            <div style={{padding:'14px 16px',display:'flex',flexDirection:'column',gap:'12px'}}>
+              <p style={{fontSize:'11px',color:'var(--color-text-2)',lineHeight:1.5}}>
+                {selected.desc}
+              </p>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'8px'}}>
+                {[
+                  {val:selected.runs,lbl:'Runs'},
+                  {val:selected.tokens,lbl:'Tokens'},
+                  {val:selected.uptime,lbl:'Uptime'},
+                ].map((s,i) => (
+                  <div key={i} style={{
+                    background:'var(--color-surface-2)',
+                    borderRadius:'8px',padding:'8px',textAlign:'center'
+                  }}>
+                    <div style={{fontSize:'14px',fontWeight:700,color:'var(--color-text)'}}>{s.val}</div>
+                    <div style={{fontSize:'8px',color:'var(--color-text-3)',textTransform:'uppercase',letterSpacing:'.06em',marginTop:'2px'}}>{s.lbl}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{display:'flex',flexWrap:'wrap',gap:'4px'}}>
+                {selected.tags.map((tag,i) => (
+                  <span key={i} style={{
+                    fontSize:'9px',background:'var(--color-surface-2)',
+                    borderRadius:'99px',padding:'3px 8px',
+                    color:'var(--color-text)',border:'1px solid var(--color-border)'
+                  }}>{tag}</span>
+                ))}
+              </div>
+              <button style={{
+                background:'var(--color-text)',color:'var(--color-bg)',
+                border:'none',borderRadius:'var(--radius-button)',
+                padding:'9px',fontSize:'11px',fontWeight:500,
+                cursor:'pointer',width:'100%'
+              }}>
+                Chat with {selected.name} →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   )

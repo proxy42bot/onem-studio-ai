@@ -33,13 +33,18 @@ export default function Sidebar() {
   return (
     <aside className={`sb${collapsed ? ' collapsed' : ''}`} id="sb">
       <div className="sb-top">
-        <div className="logo-box"><span>ON</span></div>
-        <div className="sb-brand">
-          <div className="sname">ONEM STUDIO AI</div>
-          <div className="ssub">Studio Dashboard</div>
+        <div className="sb-top-row">
+          <div className="logo-box"><span>ON</span></div>
+          <div className="sb-brand">
+            <div className="sname">ONEM STUDIO AI</div>
+            <div className="ssub">Studio Dashboard</div>
+          </div>
         </div>
-        <button className="toggle-btn" onClick={() => setCollapsed(c => !c)}>
-          {collapsed ? '›' : '‹'}
+        <button
+          className="toggle-btn"
+          onClick={() => setCollapsed(c => !c)}
+        >
+          {collapsed ? '›' : '‹ collapse'}
         </button>
       </div>
       <nav className="sb-nav">
