@@ -134,11 +134,16 @@ export default function AgentsPage() {
  >
  <div style={{
  width:'30px', height:'30px', borderRadius:'8px',
- background: a.color + '30',
- border: `1px solid ${a.color}60`,
- display:'flex', alignItems:'center', justifyContent:'center',
- flexShrink:0, fontSize:'9px', fontWeight:700, color:a.color
- }}>{a.initials}</div>
+ overflow:'hidden', flexShrink:0,
+ border:`1px solid ${a.color}60`
+ }}>
+ <img
+ src={`/avatars/${a.id.toLowerCase()}.png`}
+ alt={a.id}
+ style={{width:'100%',height:'100%',objectFit:'cover'}}
+ onError={(e)=>{e.currentTarget.style.display='none'}}
+ />
+ </div>
  <div style={{flex:1, minWidth:0}}>
  <div style={{fontSize:'11px',fontWeight:600,
  color:'var(--color-text)'}}>{a.id}</div>
@@ -213,11 +218,15 @@ export default function AgentsPage() {
  }}>
  <div style={{
  width:'52px', height:'52px', borderRadius:'14px',
- background:'rgba(0,0,0,0.25)',
- border:'2px solid rgba(255,255,255,0.3)',
- display:'flex', alignItems:'center', justifyContent:'center',
- fontSize:'16px', fontWeight:700, color:'#fff'
- }}>{selected.initials}</div>
+ overflow:'hidden',
+ border:'2px solid rgba(255,255,255,0.3)'
+ }}>
+ <img
+ src={`/avatars/${selected.id.toLowerCase()}.png`}
+ alt={selected.id}
+ style={{width:'100%',height:'100%',objectFit:'cover'}}
+ />
+ </div>
  <button onClick={() => setSelected(null)} style={{
  position:'absolute', top:'10px', right:'10px',
  width:'22px', height:'22px',

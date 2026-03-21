@@ -146,12 +146,16 @@ export default function FloatingChat() {
  }}>
  <div style={{
  width:'28px', height:'28px', borderRadius:'8px',
- background: agent.color + '40',
- border:`1px solid ${agent.color}`,
- display:'flex', alignItems:'center',
- justifyContent:'center', fontSize:'9px',
- fontWeight:700, color:'#fff', flexShrink:0
- }}>{agent.initials}</div>
+ overflow:'hidden', flexShrink:0,
+ border:`1px solid ${agent.color}`
+ }}>
+ <img
+ src={`/avatars/${agent.id.toLowerCase()}.png`}
+ alt={agent.id}
+ style={{width:'100%',height:'100%',objectFit:'cover',borderRadius:'6px'}}
+ onError={(e)=>{e.currentTarget.style.display='none'}}
+ />
+ </div>
  <div style={{flex:1}}>
  <div style={{fontSize:'12px',fontWeight:600,color:'var(--color-bg)'}}>
  {agent.id}

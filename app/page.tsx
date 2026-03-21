@@ -110,7 +110,14 @@ function GridContent({
             <DragHandle />
             {agents.map((a, i) => (
               <div className="agent-row" key={i}>
-                <div className="agent-avatar" />
+                <div className="agent-avatar" style={{overflow:'hidden',borderRadius:'6px'}}>
+                  <img
+                    src={`/avatars/${a.name.toLowerCase()}.png`}
+                    alt={a.name}
+                    style={{width:'100%',height:'100%',objectFit:'cover'}}
+                    onError={(e)=>{e.currentTarget.style.display='none'}}
+                  />
+                </div>
                 <div style={{ flex: 1 }}>
                   <div className="agent-name">{a.name}</div>
                   <div className="agent-role">{a.role}</div>
