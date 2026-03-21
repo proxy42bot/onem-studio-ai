@@ -18,6 +18,7 @@
  --font-primary: 'DM Sans', sans-serif;
  --font-mono: 'JetBrains Mono', monospace;
  --sidebar-width: 220px;
+ --sidebar-col: 52px;
  --topbar-height: 56px;
  --footer-height: 36px;
 }

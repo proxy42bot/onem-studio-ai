@@ -20,10 +20,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Sidebar />
           <div style={{
             flex:1,
-            marginLeft:'var(--sidebar-width)',
+            marginLeft:'var(--sidebar-current, var(--sidebar-width))',
             display:'flex',
             flexDirection:'column',
-            minHeight:'100vh'
+            minHeight:'100vh',
+            transition:'margin-left 250ms ease'
           }}>
             {children}
           </div>
